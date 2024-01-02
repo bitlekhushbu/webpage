@@ -1,0 +1,64 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+ 
+  form {
+    margin-bottom: 20px;
+  }
+ 
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+ 
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+ 
+  button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+ 
+  button:hover {
+    background-color: #0056b3;
+  }
+ 
+  .result-section {
+    margin-bottom: 30px;
+  }
+ 
+  h2 {
+    margin-bottom: 10px;
+  }
+ 
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+  }
+ 
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+ 
+  th {
+    background-color: #f2f2f2;
+  }
+ 
+  img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
