@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Bar } from 'react-chartjs-2';
 // import { Doughnut } from 'react-chartjs-2';
 import { CategoryScale } from 'chart.js';
@@ -13,8 +13,14 @@ const PageSpeedInsights = () => {
   const [lighthouseMetrics, setLighthouseMetrics] = useState({});
   const [screenshot, setScreenshot] = useState('');
   const [selectedDevice, setSelectedDevice] = useState('desktop'); // Added state for device selection
+  const [unsizedImagesData, setUnsizedImagesData] = useState({});
+  const [passiveEventListenersData, setPassiveEventListenersData] = useState({});
+  const [unminifiedJavascriptData, setUnminifiedJavascriptData] = useState({}); // Add state for unminified-javascript
+  const [unusedJavascriptData, setUnusedJavascriptData] = useState({}); // Add state for unused-javascript
 
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
+
+
 
   const getPageSpeedInsights = async (e) => {
     e.preventDefault();
@@ -40,6 +46,112 @@ const PageSpeedInsights = () => {
       setCruxMetrics(cruxMetricsData);
 
       const lighthouseData = json.lighthouseResult;
+
+      
+
+       /****************START: Image elements do not have explicit `width` and `height`****************/
+
+
+      // Display information for "unsized-images" similarly to unminified-javascript
+    const unsizedImagesItems = lighthouseData.audits["unsized-images"].details.items;
+    console.log(unsizedImagesItems);
+
+
+    // Extract URLs from unsized-images items
+    const imageDetails = unsizedImagesItems.map(item => (
+      {
+        title: item.node.nodeLabel,
+        url: item.url,
+        path: item.node.snippet.match(/src="([^"]*)"/)[1]
+      }
+    ));
+
+
+    const unsizedImagesData = {
+      title: lighthouseData.audits["unsized-images"].title,
+      description: lighthouseData.audits["unsized-images"].description,
+      items: imageDetails
+    };
+
+
+    setUnsizedImagesData(unsizedImagesData);
+
+
+    /****************END: Image elements do not have explicit `width` and `height`****************/
+
+
+        /****************START: Minify JS****************/
+
+
+         // Display information for "unminified-javascript"
+      const unminifiedJavascriptItems = lighthouseData.audits["unminified-javascript"].details.items;
+      console.log(unminifiedJavascriptItems);
+
+
+      // Extract information from unminified-javascript items
+      const unminifiedJavascriptData = {
+        title: lighthouseData.audits["unminified-javascript"].title,
+        description: lighthouseData.audits["unminified-javascript"].description,
+        displayValue: lighthouseData.audits["unminified-javascript"].displayValue,
+        items: unminifiedJavascriptItems.map(item => ({
+          url: item.url,
+          totalBytes: item.totalBytes,
+          wastedBytes: item.wastedBytes,
+        }))
+      };
+
+
+      setUnminifiedJavascriptData(unminifiedJavascriptData);
+     
+      /****************END: Minify JS****************/
+
+
+
+
+      // ****************START: Display information for "uses-passive-event-listeners" similarly to unminified-javascript****************
+// Display information for "uses-passive-event-listeners" similarly to unminified-javascript
+const usesPassiveEventListenersItems = lighthouseData.audits["uses-passive-event-listeners"].details.items;
+console.log(usesPassiveEventListenersItems);
+
+
+// Extract information from uses-passive-event-listeners items
+const passiveEventListenersData = {
+  title: lighthouseData.audits["uses-passive-event-listeners"].title,
+  description: lighthouseData.audits["uses-passive-event-listeners"].description,
+  items: usesPassiveEventListenersItems.map(item => ({
+    source: item.source
+  }))
+};
+
+
+setPassiveEventListenersData(passiveEventListenersData);
+// ****************End: Display information for "uses-passive-event-listeners" similarly to unminified-javascript****************
+
+
+/****************Start: Reduce unused JavaScript****************/
+
+
+// Extract information from unused-javascript items
+const unusedJavascriptItems = json.lighthouseResult.audits["unused-javascript"].details.items;
+const unusedJavascriptData = {
+  title: json.lighthouseResult.audits["unused-javascript"].title,
+  description: json.lighthouseResult.audits["unused-javascript"].description,
+  displayValue: json.lighthouseResult.audits["unused-javascript"].displayValue,
+  items: unusedJavascriptItems.map(item => ({
+    url: item.url,
+    totalBytes: item.totalBytes,
+    wastedBytes: item.wastedBytes,
+  }))
+};
+
+
+setUnusedJavascriptData(unusedJavascriptData);
+
+
+/****************End : Reduce unused JavaScript****************/
+
+
+
       const lighthouseMetricsData = {
         'Timing': lighthouseData.timing.total,
         'Total Blocking Time': lighthouseData.audits['total-blocking-time'].displayValue.replace(/,/g, ''),
@@ -76,6 +188,8 @@ const PageSpeedInsights = () => {
       setLoadingMessage("An error occurred while fetching data.");
     }
   };
+
+    
 
   const buildQueryURL = (url, key) => {
     const api = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
@@ -322,6 +436,21 @@ const getColorBasedOnCategory = (category) => {
   //   return <Doughnut data={data} options={options} />;
   // };
 
+  const bytesToKiB = (bytes) => {
+    return (bytes / 1024).toFixed(2);
+  };
+
+  const [carbonFootprint, setCarbonFootprint] = useState(null);
+
+  useEffect(() => {
+    if (Object.keys(lighthouseMetrics).length > 0) {
+      // Calculate carbon footprint based on total energy consumption (example)
+      const totalEnergyConsumption = lighthouseMetrics['Total Byte Weight'] * 0.000001; // Example factor
+      const carbonFootprintValue = totalEnergyConsumption * 0.5; // Example carbon intensity factor
+      setCarbonFootprint(carbonFootprintValue.toFixed(2));
+    }
+  }, [lighthouseMetrics]);
+  
   return (
     <div className="container" id="main">
       <h1>Webpage Speed Test</h1>
@@ -345,11 +474,85 @@ const getColorBasedOnCategory = (category) => {
       <div className="container" id="results">
         {Object.keys(cruxMetrics).length > 0 && (
           <div className="result-section">
-            <h2>Chrome User Experience Report Results</h2>
+           {/* <h2>Chrome User Experience Report Results</h2>*/}
         {/*{renderTable(cruxMetrics)}*/}
           </div>
         )}
-      
+        {/* Render unminified-javascript data in the component */}
+  {Object.keys(unminifiedJavascriptData).length > 0 && (
+    <div className="result-section">
+    <h2>OPPORTUNITIES</h2>
+      <h3>{unminifiedJavascriptData.title}</h3>
+      <p>{unminifiedJavascriptData.description}</p>
+      <p>Display Value: {unminifiedJavascriptData.displayValue}</p>
+      <ul>
+        {unminifiedJavascriptData.items.map((item, index) => (
+          <li key={index}>
+            <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
+            <p>Transfer Size: {bytesToKiB(item.totalBytes)} KiB</p>
+            <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+
+  {/* Render unsized images data in the component */}
+{Object.keys(unsizedImagesData).length > 0 && (
+  <div className="result-section">
+    <h2>{unsizedImagesData.title}</h2>
+    <p>{unsizedImagesData.description}</p>
+    <ul>
+      {unsizedImagesData.items.map((item, index) => (
+        <li key={index}>
+          <p>{item.title}</p>
+          <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
+          <p>Path: {item.path}</p>
+          <img src={item.url} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+
+{/* Render passive event listeners data in the component */}
+{Object.keys(passiveEventListenersData).length > 0 && (
+  <div className="result-section">
+    <h2>{passiveEventListenersData.title}</h2>
+    <p>{passiveEventListenersData.description}</p>
+    <ul>
+      {passiveEventListenersData.items.map((item, index) => (
+        <li key={index}>
+          <p>Source URL: <a href={item.source.url} target="_blank" rel="noreferrer">{item.source.url}</a> </p>
+          <p>Column: {item.source.column}</p>
+          <p>Line: {item.source.line}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+{/* Render Reduce unused JavaScript */}
+
+
+{Object.keys(unusedJavascriptData).length > 0 && (
+    <div className="result-section">
+      <h2>{unusedJavascriptData.title}</h2>
+      <p>{unusedJavascriptData.description}</p>
+      <p>Display Value: {unusedJavascriptData.displayValue}</p>
+      <ul>
+        {unusedJavascriptData.items.map((item, index) => (
+          <li key={index}>
+          <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
+            <p>Transfer Size:  {bytesToKiB(item.totalBytes)} KiB</p>
+            <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+          
 
         {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
@@ -365,8 +568,20 @@ const getColorBasedOnCategory = (category) => {
           </div>
         )}
       </div>
+
+      {carbonFootprint !== null && (
+        <div className="result-section">
+          <h2>Carbon Footprint</h2>
+          <p>
+            Estimated Carbon Footprint: {carbonFootprint} kg CO2e
+          </p>
+        </div>
+      )}
     </div>
+    
   );
 };
+
+
 
 export default PageSpeedInsights;
