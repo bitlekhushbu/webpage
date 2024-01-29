@@ -51,7 +51,8 @@ const PageSpeedInsights = () => {
   const [serverResponseTimeData, setServerResponseTimeData] = useState({});
   // Set state for critical-request-chains
   const [criticalRequestChainsData, setCriticalRequestChainsData] = useState({});
-
+  // Set state for network-requests
+  const [networkRequestsData, setNetworkRequestsData] = useState({});
 
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
 
@@ -572,7 +573,21 @@ const criticalRequestChains = {
 
 setCriticalRequestChainsData(criticalRequestChains);
 
+// Display information for "network-requests"
+const networkRequestsData = lighthouseData.audits["network-requests"];
+console.log(networkRequestsData);
 
+// Extract information from network-requests
+const networkRequests = {
+  title: networkRequestsData.title,
+  description: networkRequestsData.description,
+  score: networkRequestsData.score,
+  scoreDisplayMode: networkRequestsData.scoreDisplayMode,
+  displayValue: networkRequestsData.displayValue,
+  details: networkRequestsData.details,
+};
+
+setNetworkRequestsData(networkRequests);
 
 
 
@@ -1161,14 +1176,24 @@ const getColorBasedOnCategory = (category) => {
     <p>Score Display Mode: {longCacheTTLData.scoreDisplayMode}</p>
     <p>Display Value: {longCacheTTLData.displayValue}</p>
     <p>Numeric Value: {longCacheTTLData.numericValue} {longCacheTTLData.numericUnit}</p>
-    <ul>
-      {longCacheTTLData.items.map((item, index) => (
-        <li key={index}>
-          <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-          <p>Cache Lifetime: {item.cacheLifetimeMs} ms</p>
-        </li>
-      ))}
-    </ul>
+    {longCacheTTLData.items && longCacheTTLData.items.length > 0 && (
+      <table>
+        <thead>
+          <tr>
+            <th>URL</th>
+            <th>Cache Lifetime</th>
+          </tr>
+        </thead>
+        <tbody>
+          {longCacheTTLData.items.map((item, index) => (
+            <tr key={index}>
+              <td><a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></td>
+              <td>{item.cacheLifetimeMs} ms</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
     <hr />
   </div>
 )}
@@ -1460,7 +1485,7 @@ const getColorBasedOnCategory = (category) => {
 
 {Object.keys(criticalRequestChainsData).length > 0 && (
   <div className="result-section">
-    <h3 style={{ color: getScoreColor(criticalRequestChainsData.score) }}>{criticalRequestChainsData.title}</h3>
+    <h3 style={{ color: getScoreColor(criticalRequestChainsData.score) }}>22. {criticalRequestChainsData.title}</h3>
     <p>{criticalRequestChainsData.description}</p>
     <p>Score: {criticalRequestChainsData.score}</p>
     <p>Score Display Mode: {criticalRequestChainsData.scoreDisplayMode}</p>
@@ -1502,7 +1527,45 @@ const getColorBasedOnCategory = (category) => {
   </div>
 )}
 
-
+{Object.keys(networkRequestsData).length > 0 && (
+  <div className="result-section">
+    <h3 style={{ color: getScoreColor(networkRequestsData.score) }}>23. {networkRequestsData.title}</h3>
+    <p>{networkRequestsData.description}</p>
+    <p>Score: {networkRequestsData.score}</p>
+    <p>Score Display Mode: {networkRequestsData.scoreDisplayMode}</p>
+    {networkRequestsData.details && (
+      <div>
+        <h3>Details:</h3>
+        {networkRequestsData.details.items && (
+          <table>
+            <thead>
+              <tr>
+                <th>URL</th>
+                <th>Resource Type</th>
+                <th>Resource Size</th>
+                <th>Network Request Time</th>
+                <th>Priority</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              {networkRequestsData.details.items.map((item, index) => (
+                <tr key={index}>
+                  <td><a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></td>
+                  <td>{item.resourceType}</td>
+                  <td>{item.resourceSize}</td>
+                  <td>{item.networkRequestTime}</td>
+                  <td>{item.priority}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    )}
+    <hr />
+  </div>
+)}
 
 
 

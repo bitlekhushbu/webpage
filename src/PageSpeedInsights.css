@@ -63,5 +63,9 @@
     margin: 0 auto;
   }
 
+  table a{
+    word-break: break-word;
+  }
+
 
   
