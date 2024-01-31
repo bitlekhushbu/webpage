@@ -920,6 +920,38 @@ const getColorBasedOnCategory = (category) => {
           </div>
         )}
 
+        {Object.keys(lighthouseMetrics).length > 0 && (
+          <div className="result-section">
+            <h2>Lighthouse Results</h2>
+            {renderTable(lighthouseMetrics)}
+            {/*{renderBarChart(lighthouseMetrics, 'Lighthouse Metrics')}*/}
+          </div>
+        )}
+
+        {carbonFootprint !== null && (
+          <div className="result-section">
+            <h2>Carbon Footprint</h2>
+            <p>
+              Estimated Carbon Footprint: {carbonFootprint} kg CO2e
+            </p>
+          </div>
+        )}
+
+        {Object.keys(thumbnailData).length > 0 && (
+          <div className="result-section">
+         
+            <ul style={{display:'flex', listStyle:'none', width:'100%'}}>
+              {thumbnailData.items.map((item, index) => (
+                <li key={index}>
+                <img src={item.data} alt="Full Page Screenshot" />
+                </li>
+              ))}
+            </ul>
+          </div>
+          )}
+
+
+
         {Object.keys(unminifiedCssData).length > 0 && (
           <div className="result-section">
           <h2>OPPORTUNITIES</h2>
@@ -1567,30 +1599,6 @@ const getColorBasedOnCategory = (category) => {
   </div>
 )}
 
-
-
-
-        {Object.keys(lighthouseMetrics).length > 0 && (
-          <div className="result-section">
-            <h2>Lighthouse Results</h2>
-            {renderTable(lighthouseMetrics)}
-            {/*{renderBarChart(lighthouseMetrics, 'Lighthouse Metrics')}*/}
-          </div>
-        )}
-
-        {Object.keys(thumbnailData).length > 0 && (
-          <div className="result-section">
-         
-            <ul style={{display:'flex', listStyle:'none', width:'100%'}}>
-              {thumbnailData.items.map((item, index) => (
-                <li key={index}>
-                <img src={item.data} alt="Full Page Screenshot" />
-                </li>
-              ))}
-            </ul>
-          </div>
-          )}
-
         {screenshot && (
           <div className="result-section">
             <h2>Screenshot</h2>
@@ -1599,14 +1607,7 @@ const getColorBasedOnCategory = (category) => {
         )}
       </div>
 
-      {carbonFootprint !== null && (
-        <div className="result-section">
-          <h2>Carbon Footprint</h2>
-          <p>
-            Estimated Carbon Footprint: {carbonFootprint} kg CO2e
-          </p>
-        </div>
-      )}
+      
     </div>
     
   );
