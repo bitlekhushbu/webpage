@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 Chart.register(CategoryScale);
 
@@ -54,7 +56,9 @@ const PageSpeedInsights = () => {
   const [networkRequestsData, setNetworkRequestsData] = useState({});
 
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
+  
 
+   
   const resultSections = [
     { data: unminifiedCssData, title: "Unminified CSS" },
     { data: unminifiedJavascriptData, title: "Unminified JavaScript" },
@@ -87,6 +91,7 @@ const PageSpeedInsights = () => {
     return a.data.score - b.data.score;
   });
   
+ 
 
   const renderResultDetails = (resultSection) => {
     switch (resultSection.title) {
@@ -478,6 +483,8 @@ const PageSpeedInsights = () => {
     }
   };
 
+
+ 
 
   const getPageSpeedInsights = async (e) => {
     e.preventDefault();
@@ -998,6 +1005,8 @@ const networkRequests = {
 setNetworkRequestsData(networkRequests);
 
 
+
+
       const lighthouseMetricsData = {
         'Timing': lighthouseData.timing.total,
         'Total Blocking Time': lighthouseData.audits['total-blocking-time'].displayValue.replace(/,/g, ''),
@@ -1041,7 +1050,8 @@ setNetworkRequestsData(networkRequests);
     }
   };
 
-    
+
+
 
   const buildQueryURL = (url, key) => {
     const api = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
@@ -1053,6 +1063,7 @@ setNetworkRequestsData(networkRequests);
 
     return query;
   };
+  
 
   const showFullPageScreenshot = (screenshotData) => {
     setScreenshot(screenshotData.screenshot.data);
@@ -1128,6 +1139,7 @@ setNetworkRequestsData(networkRequests);
       </table>
     );
   };
+ 
  
 
 
@@ -1280,18 +1292,28 @@ const getColorBasedOnCategory = (category) => {
           {sortedResultSections && (
           <div>
           <h2>Opportunities</h2>
-            {sortedResultSections.map((resultSection, index) => (
-            
-              <div key={index} className="result-section">
-                <h3 style={{ color: getScoreColor(resultSection.data.score) }}>{index + 1}. {resultSection.title}</h3>
-                <p>{resultSection.data.description}</p>
-                <p>Score: {resultSection.data.score}</p>
-                {/* ... render other details for the result section */}
-                {renderResultDetails(resultSection)}
-                <hr />
-                <br/>
-              </div>
-            ))}
+          {sortedResultSections.map((resultSection, index) => (
+            <Accordion key={index}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel-${index}-content`}
+                id={`panel-${index}-header`}
+              >
+                <Typography style={{ color: getScoreColor(resultSection.data.score) }}>{`${index + 1}. ${resultSection.title}`}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div>
+                  <p>{resultSection.data.description}</p>
+                  <p>Score: {resultSection.data.score}</p>
+                  {/* Render common details for the result section */}
+                  {renderResultDetails(resultSection)}
+                  {/* ... render other details for the result section */}
+                </div>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+          <br/>
+          <br/>
           </div>
         )}
  
@@ -1312,6 +1334,9 @@ const getColorBasedOnCategory = (category) => {
     
   );
 };
+
+
+
 
 // Function to determine the color based on the score value
 const getScoreColor = (score) => {
