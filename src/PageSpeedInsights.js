@@ -12,6 +12,7 @@ Chart.register(CategoryScale);
 const PageSpeedInsights = () => {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [lighthouseMetrics, setLighthouseMetrics] = useState({});
+  
   const [screenshot, setScreenshot] = useState('');
   const [thumbnailData, setthumbnailData] = useState({});
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -54,7 +55,7 @@ const PageSpeedInsights = () => {
   const [criticalRequestChainsData, setCriticalRequestChainsData] = useState({});
   // Set state for network-requests
   const [networkRequestsData, setNetworkRequestsData] = useState({});
-
+  
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
   
 
@@ -1028,6 +1029,7 @@ setNetworkRequestsData(networkRequests);
 
 
       const lighthouseMetricsData = {
+        'Performance': lighthouseData.categories.performance.score * 100,
         'Timing': lighthouseData.timing.total,
         'Total Blocking Time': lighthouseData.audits['total-blocking-time'].displayValue.replace(/,/g, ''),
         'First Contentful Paint': lighthouseData.audits['first-contentful-paint'].displayValue,
@@ -1053,8 +1055,6 @@ setNetworkRequestsData(networkRequests);
         // 'Render Blocking Resources': lighthouseData.audits['render-blocking-resources'].numericValue,
         
       };
-
-      
 
       setLighthouseMetrics(lighthouseMetricsData);
       showFullPageScreenshot(lighthouseData.fullPageScreenshot);
@@ -1273,6 +1273,16 @@ const getColorBasedOnCategory = (category) => {
       {isDataLoaded && (
       <div className="container" id="results">
         
+        {/* Display 'Performance' metric separately */}
+        {lighthouseMetrics['Performance'] !== undefined && (
+          <div className="result-section">
+            <h2>Overall score</h2>
+            <p>
+              Performance Score: {lighthouseMetrics['Performance'].toFixed(0)}%.
+            </p>
+          </div>
+        )}
+      
         {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
             <h2>Lighthouse Results</h2>
