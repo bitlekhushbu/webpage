@@ -1115,7 +1115,7 @@ setNetworkRequestsData(networkRequests);
         <tbody>
           {Object.keys(metrics).map((key, index) => {
             const colorCategory =
-                key === 'Total Blocking Time'
+              key === 'Total Blocking Time'
                 ? tbtCategory
                 : key === 'First Contentful Paint'
                 ? fcpCategory
@@ -1126,16 +1126,17 @@ setNetworkRequestsData(networkRequests);
                 : key === 'Cumulative Layout Shift'
                 ? clsCategory
                 : '';
- 
+    
             const displayValue =
-              key === 'Total Blocking Time' ||
-              key === 'First Contentful Paint' ||
-              key === 'Largest Contentful Paint' ||
-              key === 'Speed Index' ||
-              key === 'Cumulative Layout Shift'
+              key === 'Total Blocking Time'
+                ? `${metrics[key].toFixed(1)} s (${colorCategory})` // Add "s" next to value
+                : key === 'First Contentful Paint' ||
+                  key === 'Largest Contentful Paint' ||
+                  key === 'Speed Index' ||
+                  key === 'Cumulative Layout Shift'
                 ? `${metrics[key]} (${colorCategory})`
                 : metrics[key];
- 
+    
             return (
               <tr key={index}>
                 <td>{key}</td>
@@ -1165,9 +1166,9 @@ setNetworkRequestsData(networkRequests);
 
 // Function to categorize FCP, LCP, Speed Index, and CLS values
 const categorizeTBT = (tbtValue) => {
-  if (tbtValue <= 200) {
+  if (tbtValue <= 0.2) {
     return 'Good';
-  } else if (tbtValue > 200 && tbtValue <= 600) {
+  } else if (tbtValue > 0.2 && tbtValue <= 0.6) {
     return 'Needs Improvement';
   } else {
     return 'Poor';
