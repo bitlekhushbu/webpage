@@ -16,7 +16,7 @@ const PageSpeedInsights = () => {
   const [screenshot, setScreenshot] = useState('');
   const [thumbnailData, setthumbnailData] = useState({});
   const [isDataLoaded, setIsDataLoaded] = useState(false);
-  const [selectedDevice, setSelectedDevice] = useState('desktop'); // Added state for device selection
+  const [selectedDevice, setSelectedDevice] = useState('mobile'); // Added state for device selection
   const [unsizedImagesData, setUnsizedImagesData] = useState({}); 
   const [unusedCssData, setUnusedCssData] = useState({});// Add state for unused-css
   const [unminifiedJavascriptData, setUnminifiedJavascriptData] = useState({}); // Add state for unminified-javascript
@@ -1031,7 +1031,7 @@ setNetworkRequestsData(networkRequests);
       const lighthouseMetricsData = {
         'Performance': lighthouseData.categories.performance.score * 100,
         'Timing': lighthouseData.timing.total,
-        'Total Blocking Time': lighthouseData.audits['total-blocking-time'].displayValue.replace(/,/g, ''),
+        'Total Blocking Time': lighthouseData.audits['total-blocking-time'].numericValue / 1000,
         'First Contentful Paint': lighthouseData.audits['first-contentful-paint'].displayValue,
         'Largest Contentful Paint': lighthouseData.audits['largest-contentful-paint'].displayValue,
         'Speed Index': lighthouseData.audits['speed-index'].displayValue,
@@ -1273,15 +1273,18 @@ const getColorBasedOnCategory = (category) => {
       {isDataLoaded && (
       <div className="container" id="results">
         
+
         {/* Display 'Performance' metric separately */}
-        {lighthouseMetrics['Performance'] !== undefined && (
-          <div className="result-section">
-            <h2>Overall score</h2>
-            <p>
-              Performance Score: {lighthouseMetrics['Performance'].toFixed(0)}%.
-            </p>
-          </div>
-        )}
+          { lighthouseMetrics['Performance'] !== undefined && (
+            <div className="result-section">
+              <h2>Overall score</h2>
+              <p>
+                Performance Score: {lighthouseMetrics['Performance'].toFixed(0)}
+              </p>
+              {/* Add conditional sentences based on the performance score and selected device */}
+             <p> {getPerformanceSentence(selectedDevice, lighthouseMetrics['Performance'])}</p>
+            </div>
+          )}
       
         {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
@@ -1366,6 +1369,30 @@ const getColorBasedOnCategory = (category) => {
 };
 
 
+function getPerformanceSentence(device, score) {
+  if (device === 'mobile') {
+    if (score >= 0 && score <= 25) {
+      return <p>Very poor as compared to many Shopify stores.</p>;
+    } else if (score >= 26 && score <= 40) {
+      return <p>Slower than many Shopify stores.</p>;
+    } else if (score >= 41 && score <= 59) {
+      return <p>Similar speed as many Shopify stores.</p>;
+    } else if (score >= 60) {
+      return <p>Faster than many Shopify stores.</p>;
+    }
+  } else if (device === 'desktop') {
+    if (score >= 0 && score <= 65) {
+      return <p>Slower than many Shopify stores.</p>;
+    } else if (score >= 66 && score <= 89) {
+      return <p>Similar speed as many Shopify stores.</p>;
+    } else if (score >= 90) {
+      return <p>Faster than many Shopify stores.</p>;
+    }
+  }
+
+  // Default return if device is neither mobile nor desktop
+  return null;
+}
 
 
 // Function to determine the color based on the score value
