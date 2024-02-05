@@ -1026,31 +1026,33 @@ const networkRequests = {
 setNetworkRequestsData(networkRequests);
 
 
-
+const networkRequestsItems = networkRequestsData.details && networkRequestsData.details.items;
+const totalUrls = networkRequestsItems ? networkRequestsItems.length : 0;
 
       const lighthouseMetricsData = {
         'Performance': lighthouseData.categories.performance.score * 100,
-        'Timing': lighthouseData.timing.total,
+        // 'Timing': lighthouseData.timing.total,
         'Total Blocking Time': lighthouseData.audits['total-blocking-time'].numericValue / 1000,
         'First Contentful Paint': lighthouseData.audits['first-contentful-paint'].displayValue,
         'Largest Contentful Paint': lighthouseData.audits['largest-contentful-paint'].displayValue,
         'Speed Index': lighthouseData.audits['speed-index'].displayValue,
-        'Time To Interactive': lighthouseData.audits['interactive'].displayValue,
-        'First Meaningful Paint': lighthouseData.audits['first-meaningful-paint'].displayValue,
-        'Server Response Time': lighthouseData.audits['server-response-time'].displayValue,
+        // 'Time To Interactive': lighthouseData.audits['interactive'].displayValue,
+        // 'First Meaningful Paint': lighthouseData.audits['first-meaningful-paint'].displayValue,
+        // 'Server Response Time': lighthouseData.audits['server-response-time'].displayValue,
         'Cumulative Layout Shift': lighthouseData.audits['cumulative-layout-shift'].displayValue,
+        // 'First Input Delay': lighthouseData.audits['first-input-delay'].displayValue,
         // 'Time To First Byte': lighthouseData.audits['time-to-first-byte'].displayValue,
         // 'Estimated Input Latency': lighthouseData.audits['estimated-input-latency'].displayValue,
-         'Max Potential First Input Delay': lighthouseData.audits['max-potential-fid'].displayValue,
+            'First Input Delay': lighthouseData.audits['max-potential-fid'].numericValue  / 1000,
         // 'First CPU Idle': lighthouseData.audits['first-cpu-idle'].displayValue,
          'Total Byte Weight': lighthouseData.audits['total-byte-weight'].displayValue,
-        'DOM Size': lighthouseData.audits['dom-size'].numericValue,
-        'Bootup Time': lighthouseData.audits['bootup-time'].displayValue,
-        'Network Requests': lighthouseData.audits['network-requests'].numericValue,
-        'Network RTT': lighthouseData.audits['network-server-latency'].numericValue,
-        'Redirects': lighthouseData.audits['redirects'].numericValue,
+        // 'DOM Size': lighthouseData.audits['dom-size'].numericValue,
+        // 'Bootup Time': lighthouseData.audits['bootup-time'].displayValue,
+        'Network Requests': totalUrls,
+        // 'Network RTT': lighthouseData.audits['network-server-latency'].numericValue,
+        // 'Redirects': lighthouseData.audits['redirects'].numericValue,
         // 'Interactive Elements': lighthouseData.audits['interactive-elements'].numericValue,
-        'Unused CSS': lighthouseData.audits['unused-css-rules'].numericValue,
+        // 'Unused CSS': lighthouseData.audits['unused-css-rules'].numericValue,
         // 'Total JavaScript Size': lighthouseData.audits['total-javascript-size'].numericValue,
         // 'Render Blocking Resources': lighthouseData.audits['render-blocking-resources'].numericValue,
         
@@ -1095,12 +1097,14 @@ setNetworkRequestsData(networkRequests);
     const speedIndexValue = metrics['Speed Index'];
     const clsValue = metrics['Cumulative Layout Shift'];
     const tbtValue = metrics['Total Blocking Time'];
- 
+    const fidValue = metrics['First Input Delay'];
+    
     const fcpCategory = categorizeFCP(parseFloat(fcpValue));
     const lcpCategory = categorizeLCP(parseFloat(lcpValue));
     const speedIndexCategory = categorizeSpeedIndex(parseFloat(speedIndexValue));
     const clsCategory = categorizeCLS(parseFloat(clsValue));
     const tbtCategory = categorizeTBT(parseFloat(tbtValue));
+    const fidCategory = categorizeFID(parseFloat(fidValue));
 
     console.log('Latest value one', fcpValue);
  
@@ -1117,6 +1121,8 @@ setNetworkRequestsData(networkRequests);
             const colorCategory =
               key === 'Total Blocking Time'
                 ? tbtCategory
+                : key === 'First Input Delay'
+                ? fidCategory
                 : key === 'First Contentful Paint'
                 ? fcpCategory
                 : key === 'Largest Contentful Paint'
@@ -1128,8 +1134,10 @@ setNetworkRequestsData(networkRequests);
                 : '';
     
             const displayValue =
-              key === 'Total Blocking Time'
-                ? `${metrics[key].toFixed(1)} s (${colorCategory})` // Add "s" next to value
+              key === 'First Input Delay'
+                ? `${metrics[key].toFixed(2)} s (${colorCategory})` // Add "s" next to value
+                : key === 'Total Blocking Time'
+                ? `${metrics[key].toFixed(2)} s (${colorCategory})`
                 : key === 'First Contentful Paint' ||
                   key === 'Largest Contentful Paint' ||
                   key === 'Speed Index' ||
@@ -1142,6 +1150,7 @@ setNetworkRequestsData(networkRequests);
                 <td>{key}</td>
                 <td>
                   {key === 'Total Blocking Time' ||
+                  key === 'First Input Delay' ||
                   key === 'First Contentful Paint' ||
                   key === 'Largest Contentful Paint' ||
                   key === 'Speed Index' ||
@@ -1169,6 +1178,16 @@ const categorizeTBT = (tbtValue) => {
   if (tbtValue <= 0.2) {
     return 'Good';
   } else if (tbtValue > 0.2 && tbtValue <= 0.6) {
+    return 'Needs Improvement';
+  } else {
+    return 'Poor';
+  }
+};
+
+const categorizeFID = (fidValue) => {
+  if (fidValue <= 0.1) {
+    return 'Good';
+  } else if (fidValue > 0.1 && fidValue <= 0.3) {
     return 'Needs Improvement';
   } else {
     return 'Poor';
@@ -1290,7 +1309,8 @@ const getColorBasedOnCategory = (category) => {
         {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
             <h2>Lighthouse Results</h2>
-            {renderTable(lighthouseMetrics)}
+            {renderTable(filterOutPerformanceMetric(lighthouseMetrics))}
+         
             {/*{renderBarChart(lighthouseMetrics, 'Lighthouse Metrics')}*/}
             <br/>
             <br/>
@@ -1327,6 +1347,7 @@ const getColorBasedOnCategory = (category) => {
           <div>
           <h2>Opportunities</h2>
           {sortedResultSections.map((resultSection, index) => (
+            resultSection.title !== 'Network Requests'  && (
             <Accordion key={index}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -1345,13 +1366,52 @@ const getColorBasedOnCategory = (category) => {
                 </div>
               </AccordionDetails>
             </Accordion>
+          )
           ))}
           <br/>
           <br/>
           </div>
         )}
  
-
+        {Object.keys(networkRequestsData).length > 0 && (
+          <div className="result-section">
+            <h3>{networkRequestsData.title}</h3>
+            <p>{networkRequestsData.description}</p>
+            <p>Score: {networkRequestsData.score}</p>
+            <p>Score Display Mode: {networkRequestsData.scoreDisplayMode}</p>
+            {networkRequestsData.details && (
+              <div>
+                <h3>Details:</h3>
+                {networkRequestsData.details.items && (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>URL</th>
+                        <th>Resource Type</th>
+                        <th>Resource Size</th>
+                        <th>Network Request Time</th>
+                        <th>Priority</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {networkRequestsData.details.items.map((item, index) => (
+                        <tr key={index}>
+                          <td><a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></td>
+                          <td>{item.resourceType}</td>
+                          <td>{item.resourceSize}</td>
+                          <td>{item.networkRequestTime}</td>
+                          <td>{item.priority}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            )}
+            <hr />
+          </div>
+        )}
 
         {screenshot && (
           <div className="result-section">
@@ -1369,6 +1429,13 @@ const getColorBasedOnCategory = (category) => {
   );
 };
 
+function filterOutPerformanceMetric(metrics) {
+  // Filter out the 'Performance' metric
+  const filteredMetrics = Object.fromEntries(
+    Object.entries(metrics).filter(([key]) => key !== 'Performance')
+  );
+  return filteredMetrics;
+}
 
 function getPerformanceSentence(device, score) {
   if (device === 'mobile') {
