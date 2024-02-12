@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 // import { Bar } from 'react-chartjs-2';
 // import { Doughnut } from 'react-chartjs-2';
 import { CategoryScale } from 'chart.js';
@@ -12,7 +12,7 @@ Chart.register(CategoryScale);
 const PageSpeedInsights = () => {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [lighthouseMetrics, setLighthouseMetrics] = useState({});
-  
+ 
   const [screenshot, setScreenshot] = useState('');
   const [thumbnailData, setthumbnailData] = useState({});
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -53,9 +53,40 @@ const PageSpeedInsights = () => {
   const [serverResponseTimeData, setServerResponseTimeData] = useState({});
   // Set state for critical-request-chains
   const [criticalRequestChainsData, setCriticalRequestChainsData] = useState({});
-  // Set state for network-requests
-  const [networkRequestsData, setNetworkRequestsData] = useState({});
+ 
+  // Set state for largest-contentful-paint-element
+  // Set state for avoid-multiple-page-redirects
+  const [avoidRedirectsData, setAvoidRedirectsData] = useState({});
+  // Set state for uses-rel-preload
+  const [usesRelPreloadData, setUsesRelPreloadData] = useState({});
+  // Set state for efficient-animated-content
+  const [efficientAnimatedContentData, setEfficientAnimatedContentData] = useState({});
+  // Set state for duplicated-javascript
+  const [duplicatedJavascriptData, setDuplicatedJavascriptData] = useState({});
+  // Set state for third-party-facades
+  const [thirdPartyFacadesData, setThirdPartyFacadesData] = useState({});
+
+  const [largestContentPaintData, setLargestContentPaintData] = useState({});
+  // Set state for largestContentPaintData
+   const [preloadLCPImageData, setPreloadLCPImageData] = useState({});
+   // Set state for legacyJavascriptData
+   const [legacyJavascriptData, setLegacyJavascriptData] = useState({});  
+   // Set state for bootupTimeData
+   const [bootupTimeData, setBootupTimeData] = useState({});    
+   // Set state for nonCompositedAnimationsData
+   const [nonCompositedAnimationsData, setNonCompositedAnimationsData] = useState({});  
+   // Set state for usesTextCompression
+   const [usesTextCompressionData, setUsesTextCompressionData] = useState({});    
+    // Set state for usesRelPreconnect
+   const [usesRelPreconnectData, setUsesRelPreconnectData] = useState({});
+
+  //  const [viewportData, setViewportData] = useState({});  largestContentfulaint-element
+  const [noDocumentWriteData, setNoDocumentWriteData] = useState({}); 
   
+
+   // Set state for network-requests
+  const [networkRequestsData, setNetworkRequestsData] = useState({});
+
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
   
 
@@ -83,7 +114,24 @@ const PageSpeedInsights = () => {
     { data: userTimingsData, title: "User Timing marks and measures" },
     { data: serverResponseTimeData, title: "Server Response Time" },
     { data: criticalRequestChainsData, title: "Avoid chaining critical requests" },
+    { data: avoidRedirectsData, title: "Avoid multiple page redirects" },
+    { data: usesRelPreloadData, title: "Preload key requests" },
+    { data: efficientAnimatedContentData, title: "Use video formats for animated content" },
+    { data: duplicatedJavascriptData, title: "Remove duplicate modules in JavaScript bundles" },
+    { data: thirdPartyFacadesData, title: "Lazy load third-party resources with facades" },
+    { data: largestContentPaintData, title: "Largest Contentful Paint image was lazily loaded" },
+    { data: preloadLCPImageData, title: "Preload Largest Contentful Paint image" },
+    { data: legacyJavascriptData, title: "Avoid serving legacy JavaScript to modern browsers" },
+    { data: bootupTimeData, title: "Reduce JavaScript execution time" } ,
+    { data: nonCompositedAnimationsData, title: "Avoid non-composited animations" },
+    { data: usesTextCompressionData, title: "Enable text compression" },
+    { data: usesRelPreconnectData, title: "Preconnect to required origins" },
+    // { data: viewportData, title: "Does not have a `\u003cmeta name=\"viewport\"\u003e` tag with `width` or `initial-scale`" }
+    { data: noDocumentWriteData, title: "Avoids `document.write()`" },
+
     { data: networkRequestsData, title: "Network Requests" },
+    
+    
     // Add more result sections as needed
   ];
   const sortedResultSections = resultSections.sort((a, b) => {
@@ -164,16 +212,29 @@ const PageSpeedInsights = () => {
       
       case "Reduce the impact of third-party code":
       return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>Third Party: {item.thirdParty}</p>
-              <p>Transfer Size: {bytesToKiB(item.transferSize)} KiB</p>
-              <p>Main Thread Time: {item.mainThreadTime} ms</p>
-            </li>
+        <table>
+        <thead>
+          <tr>
+            <th>Third Party:</th>
+            <th>Transfer Size:</th>
+            <th>Main Thread Time: </th>
+          </tr>
+        </thead>
+        <tbody>
+        {resultSection.data.items && resultSection.data.items.map((item, index) => (
+            <tr key={index}>
+              <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
+              <td>{bytesToKiB(item.transferSize)} KiB</td>
+              <td>{item.mainThreadTime} ms</td>
+            </tr>
           ))}
-        </ul>
+        </tbody>
+      </table>
       );
+
+      
+
+
       
       case "Defer offscreen images":
       return (
@@ -216,14 +277,23 @@ const PageSpeedInsights = () => {
 
       case "Minimize main-thread work":
       return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>Category: {item.groupLabel}</p>
-              <p>Duration: {item.duration.toFixed(0)} ms</p>
-            </li>
+        <table>
+        <thead>
+          <tr>
+            <th>category</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+        {resultSection.data.items && resultSection.data.items.map((item, index) => (
+            <tr key={index}>
+              <td>{item.groupLabel}</td>
+              <td>{item.duration.toFixed(0)} ms</td>
+            </tr>
           ))}
-        </ul>
+        </tbody>
+      </table>
+      
       );
 
       case "Avoid an excessive DOM size":
@@ -430,7 +500,7 @@ const PageSpeedInsights = () => {
       );
 
 
-      case "Initial server response time was short":
+      case "Server Response Time":
       return (
         <table>
             <thead>
@@ -449,6 +519,243 @@ const PageSpeedInsights = () => {
             </tbody>
           </table>
       );
+
+    
+
+  case "Avoid multiple page redirects":
+    return (
+      
+        <table>
+          <thead>
+            <tr>
+              <th>URL</th>
+              <th>Redirects</th>
+              <th>Wasted Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            { resultSection.data.items && resultSection.data.items.map((item, index) => (
+              <tr key={index}>
+                <td>{item.url}</td>
+                <td>{item.redirects}</td>
+                <td>{item.wastedMs.toFixed(2)} ms</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+     
+  );
+  
+  case "Preload key requests":
+    return (
+      
+      <table>
+      <thead>
+        <tr>
+          <th>URL</th>
+          <th>Total Blocking Time</th>
+        </tr>
+      </thead>
+      <tbody>
+      { resultSection.data.items && resultSection.data.items.map((item, index) => (
+          <tr key={index}>
+            <td>{item.url}</td>
+            <td>{item.totalBlockingTime.toFixed(2)} ms</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+     
+  );
+
+  case "Use video formats for animated content":
+    return (
+      <table>
+            <thead>
+              <tr>
+                <th>URL</th>
+                <th>Total Blocking Time</th>
+              </tr>
+            </thead>
+            <tbody>
+            { resultSection.data.items && resultSection.data.items.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.url}</td>
+                  <td>{item.totalBlockingTime.toFixed(2)} ms</td>
+                </tr>
+              ))}
+            </tbody>
+      </table>
+  );
+
+  
+
+    case "Remove duplicate modules in JavaScript bundles":
+      return (
+        <table>
+              <thead>
+                <tr>
+                  <th>URL</th>
+                  <th>Total Bytes</th>
+                  <th>Wasted Bytes</th>
+                </tr>
+              </thead>
+              <tbody>
+              {resultSection.data.items && resultSection.data.items.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.url}</td>
+                    <td>{item.totalBytes}</td>
+                    <td>{item.wastedBytes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+    );
+
+    case "Lazy load third-party resources with facades":
+      return (
+          <table>
+            <thead>
+              <tr>
+                <th>URL</th>
+                <th>Facades</th>
+                <th>Wasted Ms</th>
+              </tr>
+            </thead>
+            <tbody>
+            {resultSection.data.items && resultSection.data.items.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.url}</td>
+                  <td>{item.facades}</td>
+                  <td>{item.wastedMs.toFixed(2)} ms</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+    );
+     
+    case "Largest Contentful Paint image was lazily loaded":
+        return (
+          <ul>
+          {resultSection.data.items && resultSection.data.items.map((item, index) => (
+            <li key={index}>
+              <p>{item.title}</p>
+              <p>Path: {item.path}</p>
+              <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
+            </li>
+          ))}
+        </ul> );
+
+
+      case "Preload Largest Contentful Paint image":
+      return (
+        <ul>
+        {resultSection.data.items && resultSection.data.items.map((item, index) => (
+          <li key={index}>
+            <p>{item.title}</p>
+            <p>Path: {item.path}</p>
+            <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
+          </li>
+        ))}
+      </ul> );
+
+
+            case "Avoid serving legacy JavaScript to modern browsers":
+              return (
+                <table>
+                    <thead>
+                      <tr>
+                        <th>URL</th>
+                        <th>Transfer Size</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
+                        <tr key={index}>
+                          <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
+                          <td>{item.totalBytes} bytes</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+             
+              );
+
+
+              case "Reduce JavaScript execution time":
+              return (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>URL</th>
+                      <th>Total CPU Time</th>
+                      <th>Script Evaluation</th>
+                      <th>Script Parse</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
+                      <tr key={index}>
+                        <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
+                        <td>{item.total.toFixed(0)} ms</td>
+                        <td>{item.scripting.toFixed(0)} ms</td>
+                        <td>{item.scriptParseCompile.toFixed(0)} ms</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+             
+              );
+
+
+              case "Avoid non-composited animations":
+                return (
+                  <ul>
+                  {resultSection.data.items && resultSection.data.items.map((item, index) => (
+                    <li key={index}>
+                      <p>{item.title}</p>
+                      <p>Path: {item.path}</p>
+                      <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
+                    </li>
+                  ))}
+                </ul> );
+
+
+                  case "Enable text compression":
+                    return (
+                      <ul>
+                      {resultSection.data.items && resultSection.data.items.map((item, index) => (
+                        <li key={index}>
+                          <p>{item.title}</p>
+                          <p>Path: {item.path}</p>
+                          <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
+                        </li>
+                      ))}
+                    </ul> );
+                    case "Avoids `document.write()`":
+                      return (
+                        <ul>
+                        {resultSection.data.items && resultSection.data.items.map((item, index) => (
+                          <li key={index}>
+                            <p>{item.title}</p>
+                            <p>Path: {item.path}</p>
+                            <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
+                          </li>
+                        ))}
+                      </ul> );
+
+                      case  "Preconnect to required origins":
+                        return (
+                        
+                            <div>
+                              <h3>Warnings:</h3>
+                              <ul>
+                              {usesRelPreconnectData.warnings && usesRelPreconnectData.warnings.map((warning, index) => (
+                                  <li key={index}>{warning}</li>
+                                ))}
+                              </ul>
+                            </div>
+                        );
 
       case "Network Requests":
 
@@ -672,24 +979,24 @@ setUnusedJavascriptData(unusedJavascriptData);
 
 
 // Display information for "third-party-summary"
-const thirdPartySummaryData = lighthouseData.audits["third-party-summary"];
-console.log(thirdPartySummaryData);
+const thirdPartySummaryData = json.lighthouseResult.audits["third-party-summary"].details.items;
 
 // Extract information from third-party-summary
 const thirdPartySummary = {
-  title: thirdPartySummaryData.title,
-  description: thirdPartySummaryData.description,
-  score: thirdPartySummaryData.score,
-  displayValue: thirdPartySummaryData.displayValue,
-  items: thirdPartySummaryData.details.items.map(item => ({
-    thirdParty: item.thirdParty,
-    transferSize: item.transferSize,
-    mainThreadTime: item.mainThreadTime,
-  })),
+  title: json.lighthouseResult.audits["third-party-summary"].title,
+  description: json.lighthouseResult.audits["third-party-summary"].description,
+  score: json.lighthouseResult.audits["third-party-summary"].score,
+  displayValue: json.lighthouseResult.audits["third-party-summary"].displayValue,
+  items: thirdPartySummaryData.flatMap(item => (
+    item.subItems.items.map(subItem => ({
+      url: subItem.url,
+      transferSize: subItem.transferSize,
+      mainThreadTime: subItem.blockingTime, // Correcting access to mainThreadTime
+    }))
+  )),
 };
 
 setThirdPartySummaryData(thirdPartySummary);
-
 
 // Display information for "offscreen-images"
 const offscreenImagesData = lighthouseData.audits["offscreen-images"];
@@ -1009,6 +1316,11 @@ const criticalRequestChains = {
 
 setCriticalRequestChainsData(criticalRequestChains);
 
+
+
+
+
+
 // Display information for "network-requests"
 const networkRequestsData = lighthouseData.audits["network-requests"];
 console.log(networkRequestsData);
@@ -1026,8 +1338,272 @@ const networkRequests = {
 setNetworkRequestsData(networkRequests);
 
 
+// Display information for "Avoid multiple page redirects"
+const avoidRedirectsData = lighthouseData.audits["redirects"];
+console.log(avoidRedirectsData);
+
+// Extract information from avoid-multiple-page-redirects
+const avoidRedirects = {
+  title: avoidRedirectsData.title,
+  description: avoidRedirectsData.description,
+  score: avoidRedirectsData.score,
+  scoreDisplayMode: avoidRedirectsData.scoreDisplayMode,
+  displayValue: avoidRedirectsData.displayValue,
+  numericValue: avoidRedirectsData.numericValue,
+  numericUnit: avoidRedirectsData.numericUnit,
+  details: avoidRedirectsData.details,
+};
+
+setAvoidRedirectsData(avoidRedirects);
+
+
+// Display information for "uses-rel-preload"
+const usesRelPreloadData = lighthouseData.audits["uses-rel-preload"];
+console.log(usesRelPreloadData);
+
+// Extract information from uses-rel-preload
+const usesRelPreload = {
+  title: usesRelPreloadData.title,
+  description: usesRelPreloadData.description,
+  score: usesRelPreloadData.score,
+  scoreDisplayMode: usesRelPreloadData.scoreDisplayMode,
+  displayValue: usesRelPreloadData.displayValue,
+  numericValue: usesRelPreloadData.numericValue,
+  numericUnit: usesRelPreloadData.numericUnit,
+  details: usesRelPreloadData.details,
+};
+
+setUsesRelPreloadData(usesRelPreload);
+
+// Display information for "efficient-animated-content"
+const efficientAnimatedContentData = lighthouseData.audits["efficient-animated-content"];
+console.log(efficientAnimatedContentData);
+
+// Extract information from efficient-animated-content
+const efficientAnimatedContent = {
+  title: efficientAnimatedContentData.title,
+  description: efficientAnimatedContentData.description,
+  score: efficientAnimatedContentData.score,
+  scoreDisplayMode: efficientAnimatedContentData.scoreDisplayMode,
+  displayValue: efficientAnimatedContentData.displayValue,
+  numericValue: efficientAnimatedContentData.numericValue,
+  numericUnit: efficientAnimatedContentData.numericUnit,
+  details: efficientAnimatedContentData.details,
+};
+
+
+setEfficientAnimatedContentData(efficientAnimatedContent);
+
+
+// Display information for "duplicated-javascript"
+const duplicatedJavascriptData = lighthouseData.audits["duplicated-javascript"];
+console.log(duplicatedJavascriptData);
+
+// Extract information from duplicated-javascript
+const duplicatedJavascript = {
+  title: duplicatedJavascriptData.title,
+  description: duplicatedJavascriptData.description,
+  score: duplicatedJavascriptData.score,
+  scoreDisplayMode: duplicatedJavascriptData.scoreDisplayMode,
+  displayValue: duplicatedJavascriptData.displayValue,
+  numericValue: duplicatedJavascriptData.numericValue,
+  numericUnit: duplicatedJavascriptData.numericUnit,
+  details: duplicatedJavascriptData.details,
+};
+
+setDuplicatedJavascriptData(duplicatedJavascript);
+
+// Display information for "third-party-facades"
+const thirdPartyFacadesData = lighthouseData.audits["third-party-facades"];
+console.log(thirdPartyFacadesData);
+
+// Extract information from third-party-facades
+const thirdPartyFacades = {
+  title: thirdPartyFacadesData.title,
+  description: thirdPartyFacadesData.description,
+  score: thirdPartyFacadesData.score,
+  scoreDisplayMode: thirdPartyFacadesData.scoreDisplayMode,
+  displayValue: thirdPartyFacadesData.displayValue,
+  numericValue: thirdPartyFacadesData.numericValue,
+  numericUnit: thirdPartyFacadesData.numericUnit,
+  details: thirdPartyFacadesData.details,
+};
+
+
+setThirdPartyFacadesData(thirdPartyFacades);
+
+
+const lcpLazyLoadedItems = lighthouseData.audits["lcp-lazy-loaded"].details.items;
+console.log("Largest Contentful Data",lcpLazyLoadedItems);
+
+
+const largestContentPaintData = {
+  title: lighthouseData.audits["lcp-lazy-loaded"].title,
+  description: lighthouseData.audits["lcp-lazy-loaded"].description,
+  score: lighthouseData.audits["lcp-lazy-loaded"].score,
+  displayValue: lighthouseData.audits["lcp-lazy-loaded"].displayValue,
+  items: lcpLazyLoadedItems.map(item => ({
+    path: item.node.snippet.match(/src="([^"]*)"/)[1]
+  }))
+};
+
+
+setLargestContentPaintData(largestContentPaintData);
+
+
+//Preload Largest Contentful Paint image
+const prioritizeLCPImageItems = lighthouseData.audits["prioritize-lcp-image"].details.items;
+console.log("Largest Contentful Data",prioritizeLCPImageItems);
+
+
+const preloadLCPImageData = {
+  title: lighthouseData.audits["prioritize-lcp-image"].title,
+  description: lighthouseData.audits["prioritize-lcp-image"].description,
+  score: lighthouseData.audits["prioritize-lcp-image"].score,
+  displayValue: lighthouseData.audits["prioritize-lcp-image"].displayValue,
+  items: prioritizeLCPImageItems.map(item => ({
+    path: item.node.snippet.match(/src="([^"]*)"/)[1]
+  }))
+};
+
+
+setPreloadLCPImageData(preloadLCPImageData);
+
+
+// Display information for "legacy-javascript"
+const legacyJavascriptData = lighthouseData.audits["legacy-javascript"];
+console.log(legacyJavascriptData);
+
+
+// Extract information from legacy-javascript
+const legacyJavascript = {
+  title: legacyJavascriptData.title,
+  description: legacyJavascriptData.description,
+  score: legacyJavascriptData.score,
+  scoreDisplayMode: legacyJavascriptData.scoreDisplayMode,
+  displayValue: legacyJavascriptData.displayValue,
+  numericValue: legacyJavascriptData.numericValue,
+  numericUnit: legacyJavascriptData.numericUnit,
+  details: legacyJavascriptData.details,
+};
+
+
+setLegacyJavascriptData(legacyJavascript);  
+
+
+
+
+// Display information for "bootup-time"
+
+const bootupTimeData = lighthouseData.audits["bootup-time"];
+console.log(legacyJavascriptData);
+
+
+// Extract information from bootup-time
+const bootupTime = {
+  title: bootupTimeData.title,
+  description: bootupTimeData.description,
+  score: bootupTimeData.score,
+  scoreDisplayMode: bootupTimeData.scoreDisplayMode,
+  displayValue: bootupTimeData.displayValue,
+  numericValue: bootupTimeData.numericValue,
+  numericUnit: bootupTimeData.numericUnit,
+  details: bootupTimeData.details,
+};
+
+
+setBootupTimeData(bootupTime);  
+
+
+//Avoid non-composited animations
+const NonCompositedAnimations = lighthouseData.audits["non-composited-animations"].details.items;
+console.log("Largest Contentful Data",NonCompositedAnimations);
+
+
+const NonCompositedAnimationsData = {
+  title: lighthouseData.audits["non-composited-animations"].title,
+  description: lighthouseData.audits["non-composited-animations"].description,
+  score: lighthouseData.audits["non-composited-animations"].score,
+  displayValue: lighthouseData.audits["non-composited-animations"].displayValue,
+  items: prioritizeLCPImageItems.map(item => ({
+    path: item.node.snippet.match(/src="([^"]*)"/)[1]
+  }))
+};
+setNonCompositedAnimationsData(NonCompositedAnimationsData);  
+
+
+
+
+
+
+//Enable text compression usesTextCompression
+const usesTextCompression = lighthouseData.audits["uses-text-compression"].details.items;
+console.log("Largest Contentful Data",usesTextCompression);
+
+
+const usesTextCompressionData = {
+  title: lighthouseData.audits["uses-text-compression"].title,
+  description: lighthouseData.audits["uses-text-compression"].description,
+  score: lighthouseData.audits["uses-text-compression"].score,
+  displayValue: lighthouseData.audits["uses-text-compression"].displayValue,
+  items: prioritizeLCPImageItems.map(item => ({
+    path: item.node.snippet.match(/src="([^"]*)"/)[1]
+  }))
+};
+setUsesTextCompressionData(usesTextCompressionData);  
+
+
+
+
+
+//Avoids `document.write()`
+const noDocumentWrite = lighthouseData.audits["no-document-write"].details.items;
+console.log("Largest Contentful Data",noDocumentWrite);
+
+
+const noDocumentWriteData = {
+  title: lighthouseData.audits["no-document-write"].title,
+  description: lighthouseData.audits["no-document-write"].description,  
+  score: lighthouseData.audits["no-document-write"].score,
+  displayValue: lighthouseData.audits["no-document-write"].displayValue
+ 
+};
+setNoDocumentWriteData(noDocumentWriteData); 
+
+
+// Display information for "uses-rel-preconnect"
+const usesRelPreconnectData = lighthouseData.audits["uses-rel-preconnect"];
+console.log(usesRelPreconnectData);
+
+// Extract information from uses-rel-preconnect
+const usesRelPreconnect = {
+  title: usesRelPreconnectData.title,
+  description: usesRelPreconnectData.description,
+  score: usesRelPreconnectData.score,
+  scoreDisplayMode: usesRelPreconnectData.scoreDisplayMode,
+  warnings: usesRelPreconnectData.warnings,
+  details: usesRelPreconnectData.details,
+};
+
+
+setUsesRelPreconnectData(usesRelPreconnect);
+
+
 const networkRequestsItems = networkRequestsData.details && networkRequestsData.details.items;
 const totalUrls = networkRequestsItems ? networkRequestsItems.length : 0;
+
+
+const totalByteWeightString = lighthouseData.audits['total-byte-weight'].displayValue;
+const totalByteWeightInBytes = parseFloat(totalByteWeightString.replace(' KiB', ''));
+
+// Conversion factor (replace it with the actual factor)
+const conversionFactor = 0.6; // grams per gigabyte
+
+// Convert total byte weight to gigabytes
+const totalByteWeightInGB = totalByteWeightInBytes / (1024 * 1024 * 1024);
+
+// Calculate estimated CO2e emissions
+const estimatedCO2eEmissions = totalByteWeightInGB * conversionFactor;
 
       const lighthouseMetricsData = {
         'Performance': lighthouseData.categories.performance.score * 100,
@@ -1055,11 +1631,16 @@ const totalUrls = networkRequestsItems ? networkRequestsItems.length : 0;
         // 'Unused CSS': lighthouseData.audits['unused-css-rules'].numericValue,
         // 'Total JavaScript Size': lighthouseData.audits['total-javascript-size'].numericValue,
         // 'Render Blocking Resources': lighthouseData.audits['render-blocking-resources'].numericValue,
-        
+        'CO2e Emissions': estimatedCO2eEmissions.toFixed(2),
       };
-
+     
+       
       setLighthouseMetrics(lighthouseMetricsData);
       showFullPageScreenshot(lighthouseData.fullPageScreenshot);
+       
+     
+
+
 
     setTimeout(() => {
         // Once data is loaded, set isDataLoaded to true
@@ -1073,7 +1654,7 @@ const totalUrls = networkRequestsItems ? networkRequestsItems.length : 0;
   };
 
 
-
+  
 
   const buildQueryURL = (url, key) => {
     const api = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
@@ -1251,7 +1832,21 @@ const getColorBasedOnCategory = (category) => {
       return '';
   }
 };
-
+const sortNetworkRequests = (items) => {
+  return items.sort((a, b) => {
+    if (a.priority === "Low" && b.priority !== "Low") {
+      return -1; // Low priority comes first
+    } else if (a.priority !== "Low" && b.priority === "Low") {
+      return 1; // Non-Low priority comes first
+    } else if (a.priority === "Low" && b.priority === "Low") {
+      // If both are Low priority, sort by resource size in descending order
+      return b.resourceSize - a.resourceSize;
+    } else {
+      // If priorities are the same, sort by resource size in ascending order
+      return a.resourceSize - b.resourceSize;
+    }
+  });
+};
 
 
 
@@ -1259,16 +1854,7 @@ const getColorBasedOnCategory = (category) => {
     return (bytes / 1024).toFixed(2);
   };
 
-  const [carbonFootprint, setCarbonFootprint] = useState(null);
-
-  useEffect(() => {
-    if (Object.keys(lighthouseMetrics).length > 0) {
-      // Calculate carbon footprint based on total energy consumption (example)
-      const totalEnergyConsumption = lighthouseMetrics['Total Byte Weight'] * 0.000001; // Example factor
-      const carbonFootprintValue = totalEnergyConsumption * 0.5; // Example carbon intensity factor
-      setCarbonFootprint(carbonFootprintValue.toFixed(2));
-    }
-  }, [lighthouseMetrics]);
+  
   
   return (
     <div className="container" id="main">
@@ -1317,16 +1903,16 @@ const getColorBasedOnCategory = (category) => {
           </div>
         )}
 
-        {carbonFootprint !== null && (
+        {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
             <h2>Carbon Footprint</h2>
             <p>
-              Estimated Carbon Footprint: {carbonFootprint} kg CO2e
+              Estimated Carbon Footprint: g CO2e
             </p>
             <br/>
             <br/>
           </div>
-        )}
+          )}
 
         {Object.keys(thumbnailData).length > 0 && (
           <div className="result-section">
@@ -1391,13 +1977,16 @@ const getColorBasedOnCategory = (category) => {
                         <th>Resource Size</th>
                         <th>Network Request Time</th>
                         <th>Priority</th>
-                        
                       </tr>
                     </thead>
                     <tbody>
-                      {networkRequestsData.details.items.map((item, index) => (
+                      {sortNetworkRequests(networkRequestsData.details.items).map((item, index) => (
                         <tr key={index}>
-                          <td><a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></td>
+                          <td>
+                            <a target="_blank" href={item.url} rel="noreferrer">
+                              {item.url}
+                            </a>
+                          </td>
                           <td>{item.resourceType}</td>
                           <td>{item.resourceSize}</td>
                           <td>{item.networkRequestTime}</td>
