@@ -12,7 +12,7 @@ Chart.register(CategoryScale);
 const PageSpeedInsights = () => {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [lighthouseMetrics, setLighthouseMetrics] = useState({});
- 
+  const [totalByteWeight, setTotalByteWeight] = useState(0);
   const [screenshot, setScreenshot] = useState('');
   const [thumbnailData, setthumbnailData] = useState({});
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -86,11 +86,29 @@ const PageSpeedInsights = () => {
 
    // Set state for network-requests
   const [networkRequestsData, setNetworkRequestsData] = useState({});
+  
+   
 
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
   
+  const calculateCO2ePerNewVisit = (totalByteWeight) => {
 
-   
+    console.log("Total New data:",totalByteWeight);
+
+    const totalByteWeightMB = totalByteWeight / 1024;
+    const newTotalByteWeightMB = totalByteWeightMB.toFixed(2); 
+    const pageWeight = 1.8; // Replace this with the actual page weight in MB
+    const averageCO2ePerNewVisit = 0.6; // Replace this with the actual average CO2e per new visit in gm
+
+    // Calculate CO2e per new visit
+    const co2ePerNewVisit = (newTotalByteWeightMB / (pageWeight * 1024)) * averageCO2ePerNewVisit; // Convert page weight to KiB
+
+    return co2ePerNewVisit.toFixed(2)
+  };
+
+  const totalByteWeightMB = totalByteWeight / 1024;
+  const newTotalByteWeightMB = totalByteWeightMB.toFixed(2); 
+
   const resultSections = [
     { data: unminifiedCssData, title: "Unminified CSS" },
     { data: unminifiedJavascriptData, title: "Unminified JavaScript" },
@@ -1593,17 +1611,9 @@ const networkRequestsItems = networkRequestsData.details && networkRequestsData.
 const totalUrls = networkRequestsItems ? networkRequestsItems.length : 0;
 
 
-const totalByteWeightString = lighthouseData.audits['total-byte-weight'].displayValue;
-const totalByteWeightInBytes = parseFloat(totalByteWeightString.replace(' KiB', ''));
-
-// Conversion factor (replace it with the actual factor)
-const conversionFactor = 0.6; // grams per gigabyte
-
-// Convert total byte weight to gigabytes
-const totalByteWeightInGB = totalByteWeightInBytes / (1024 * 1024 * 1024);
-
-// Calculate estimated CO2e emissions
-const estimatedCO2eEmissions = totalByteWeightInGB * conversionFactor;
+let totalByteWeightKiB = parseFloat(lighthouseData.audits['total-byte-weight'].displayValue.replace(/[^\d.]/g, ''));
+let totalByteWeightMB = totalByteWeightKiB / 1024;
+let newTotalByteWeightMB = totalByteWeightMB.toFixed(2);
 
       const lighthouseMetricsData = {
         'Performance': lighthouseData.categories.performance.score * 100,
@@ -1621,7 +1631,7 @@ const estimatedCO2eEmissions = totalByteWeightInGB * conversionFactor;
         // 'Estimated Input Latency': lighthouseData.audits['estimated-input-latency'].displayValue,
             'First Input Delay': lighthouseData.audits['max-potential-fid'].numericValue  / 1000,
         // 'First CPU Idle': lighthouseData.audits['first-cpu-idle'].displayValue,
-         'Total Byte Weight': lighthouseData.audits['total-byte-weight'].displayValue,
+         'Total Byte Weight': newTotalByteWeightMB,
         // 'DOM Size': lighthouseData.audits['dom-size'].numericValue,
         // 'Bootup Time': lighthouseData.audits['bootup-time'].displayValue,
         'Network Requests': totalUrls,
@@ -1631,15 +1641,17 @@ const estimatedCO2eEmissions = totalByteWeightInGB * conversionFactor;
         // 'Unused CSS': lighthouseData.audits['unused-css-rules'].numericValue,
         // 'Total JavaScript Size': lighthouseData.audits['total-javascript-size'].numericValue,
         // 'Render Blocking Resources': lighthouseData.audits['render-blocking-resources'].numericValue,
-        'CO2e Emissions': estimatedCO2eEmissions.toFixed(2),
+     
       };
      
+
        
       setLighthouseMetrics(lighthouseMetricsData);
       showFullPageScreenshot(lighthouseData.fullPageScreenshot);
        
      
-
+      const totalByteWeightValue = lighthouseData.audits['total-byte-weight'].numericValue;
+      setTotalByteWeight(totalByteWeightValue);
 
 
     setTimeout(() => {
@@ -1903,16 +1915,14 @@ const sortNetworkRequests = (items) => {
           </div>
         )}
 
-        {Object.keys(lighthouseMetrics).length > 0 && (
+        {/* Add the following code to display CO2e per new visit */}
+        {totalByteWeight > 0 && (
           <div className="result-section">
-            <h2>Carbon Footprint</h2>
-            <p>
-              Estimated Carbon Footprint: g CO2e
-            </p>
-            <br/>
-            <br/>
+            <h2>CO2e per New Visit</h2>
+            <p>Total Byte Weight: {bytesToKiB(newTotalByteWeightMB)} MB</p>
+            <p>CO2e per New Visit: {calculateCO2ePerNewVisit(totalByteWeight)} gm</p>
           </div>
-          )}
+        )}
 
         {Object.keys(thumbnailData).length > 0 && (
           <div className="result-section">
@@ -1958,7 +1968,9 @@ const sortNetworkRequests = (items) => {
           <br/>
           </div>
         )}
- 
+        
+
+
         {Object.keys(networkRequestsData).length > 0 && (
           <div className="result-section">
             <h3>{networkRequestsData.title}</h3>
