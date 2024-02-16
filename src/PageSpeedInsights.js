@@ -6,6 +6,42 @@ import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import UnminifiedCssResults from './UnminifiedCssResults'; 
+import UnminifiedJavascriptResults from './UnminifiedJavascriptResults'; 
+import UnusedCssResults from './UnusedCssResults';
+import UnusedJavascriptResults from './UnusedJavascriptResults';
+import UnsizedImagesResults from './UnsizedImagesResults'; 
+import ThirdPartySummaryResults from './ThirdPartySummaryResults'; 
+import OffscreenImagesResults from './OffscreenImagesResults'; 
+import NetworkRequestsResults from './NetworkRequestsResults';
+import UsesResponsiveImagesResults from './UsesResponsiveImagesResults';
+import RenderBlockingResourcesResults from './RenderBlockingResourcesResults';
+import MainThreadWorkBreakdownResults from './MainThreadWorkBreakdownResults';
+import DomSizeResults from './DomSizeResults';
+import ModernImageFormatsResults from './ModernImageFormatsResults';
+import LongCacheTTLResults from './LongCacheTTLResults';
+import FontDisplayResults from './FontDisplayResults';
+import UsesPassiveEventListenersResults from './UsesPassiveEventListenersResults';
+import UsesOptimizedImagesResults from './UsesOptimizedImagesResults';
+import TotalByteWeightResults from './TotalByteWeightResults';
+import LongTasksResults from './LongTasksResults';
+import LayoutShiftElementsResults from './LayoutShiftElementsResults';
+import UserTimingsData from './UserTimingsData';
+import ServerResponseTimeData from './ServerResponseTimeData';
+import AvoidRedirectsResults from './AvoidRedirectsResults';
+import UsesRelPreloadResults from './UsesRelPreloadResults';
+import EfficientAnimatedContentResults from './EfficientAnimatedContentResults';
+import DuplicatedJavascriptResults from './DuplicatedJavascriptResults';
+import ThirdPartyFacadesResults from './ThirdPartyFacadesResults';
+import LargestContentPaintResults from './LargestContentPaintResults';
+import PreloadLCPImageResults from './PreloadLCPImageResults';
+import LegacyJavascriptResults from './LegacyJavascriptResults';
+import bootupTimeResults from './bootupTimeResults';
+import NonCompositedAnimationsResults from './NonCompositedAnimationsResults';
+import UsesTextCompressionResults from './UsesTextCompressionResults';
+import UsesRelPreconnectResults from './UsesRelPreconnectResults';
+import NoDocumentWriteResults from './NoDocumentWriteResults'
+
 
 Chart.register(CategoryScale);
 
@@ -110,46 +146,43 @@ const PageSpeedInsights = () => {
   const newTotalByteWeightMB = totalByteWeightMB.toFixed(2); 
 
   const resultSections = [
-    { data: unminifiedCssData, title: "Unminified CSS" },
-    { data: unminifiedJavascriptData, title: "Unminified JavaScript" },
-    { data: unsizedImagesData, title: "Image elements do not have explicit `width` and `height`" },
-    { data: unusedCssData, title: "Reduce unused CSS" },
-    { data: unusedJavascriptData, title: "Reduce unused JavaScript" },
-    { data: thirdPartySummaryData, title: "Reduce the impact of third-party code" },
-    { data: offscreenImagesData, title: "Defer offscreen images" },
-    { data: usesResponsiveImagesData, title: "Properly size images" },
-    { data: renderBlockingResourcesData, title: "Eliminate render-blocking resources" },
-    { data: mainThreadWorkBreakdownData, title: "Minimize main-thread work" },
-    { data: domSizeData, title: "Avoid an excessive DOM size" },
-    { data: modernImageFormatsData, title: "Serve images in next-gen formats" },
-    { data: longCacheTTLData, title: "Serve static assets with an efficient cache policy" },
-    { data: fontDisplayData, title: "Ensure text remains visible during webfont load" },
-    { data: usesPassiveEventListenersData, title: "Does not use passive listeners to improve scrolling performance" },
-    { data: usesOptimizedImagesData, title: "Efficiently encode images" },
-    { data: totalByteWeightData, title: "Avoid enormous network payloads" },
-    { data: longTasksData, title: "Avoid long main-thread tasks" },
-    { data: layoutShiftElementsData, title: "Avoid large layout shifts" },
-    { data: userTimingsData, title: "User Timing marks and measures" },
-    { data: serverResponseTimeData, title: "Server Response Time" },
+    { Component: UnminifiedCssResults, data: unminifiedCssData, title: "Unminified CSS" },
+    { Component: UnminifiedJavascriptResults, data: unminifiedJavascriptData, title: "Unminified JavaScript" },
+    { Component: UnsizedImagesResults, data: unsizedImagesData, title: "Image elements do not have explicit `width` and `height`" },
+    { Component: UnusedCssResults, data: unusedCssData, title: "Reduce Unused CSS" },
+    { Component: UnusedJavascriptResults, data: unusedJavascriptData, title: "Reduce Unused JavaScript" },
+    { Component: ThirdPartySummaryResults, data: thirdPartySummaryData, title: "Reduce the impact of third-party code" },
+    { Component: OffscreenImagesResults, data: offscreenImagesData, title: "Defer offscreen images" },
+    { Component: UsesResponsiveImagesResults, data: usesResponsiveImagesData, title: "Properly size images" },
+    { Component: RenderBlockingResourcesResults, data: renderBlockingResourcesData, title: "Eliminate render-blocking resources" },
+    { Component: MainThreadWorkBreakdownResults, data: mainThreadWorkBreakdownData, title: "Minimize main-thread work" },
+    { Component: DomSizeResults, data: domSizeData, title: "Avoid an excessive DOM size" },
+    { Component: ModernImageFormatsResults, data: modernImageFormatsData, title: "Serve images in next-gen formats" },
+    { Component: LongCacheTTLResults, data: longCacheTTLData, title: "Serve static assets with an efficient cache policy" },
+    { Component: FontDisplayResults, data: fontDisplayData, title: "Ensure text remains visible during webfont load" },
+    { Component: UsesPassiveEventListenersResults, data: usesPassiveEventListenersData, title: "Does not use passive listeners to improve scrolling performance" },
+    { Component: UsesOptimizedImagesResults, data: usesOptimizedImagesData, title: "Efficiently encode images" },
+    { Component: TotalByteWeightResults, data: totalByteWeightData, title: "Avoid enormous network payloads" },
+    { Component: LongTasksResults, data: longTasksData, title: "Avoid long main-thread tasks" },
+    { Component: LayoutShiftElementsResults, data: layoutShiftElementsData, title: "Avoid large layout shifts" },
+    { Component: UserTimingsData, data: userTimingsData, title: "User Timing marks and measures" },
+    { Component: ServerResponseTimeData, data: serverResponseTimeData, title: "Server Response Time" },
     { data: criticalRequestChainsData, title: "Avoid chaining critical requests" },
-    { data: avoidRedirectsData, title: "Avoid multiple page redirects" },
-    { data: usesRelPreloadData, title: "Preload key requests" },
-    { data: efficientAnimatedContentData, title: "Use video formats for animated content" },
-    { data: duplicatedJavascriptData, title: "Remove duplicate modules in JavaScript bundles" },
-    { data: thirdPartyFacadesData, title: "Lazy load third-party resources with facades" },
-    { data: largestContentPaintData, title: "Largest Contentful Paint image was lazily loaded" },
-    { data: preloadLCPImageData, title: "Preload Largest Contentful Paint image" },
-    { data: legacyJavascriptData, title: "Avoid serving legacy JavaScript to modern browsers" },
-    { data: bootupTimeData, title: "Reduce JavaScript execution time" } ,
-    { data: nonCompositedAnimationsData, title: "Avoid non-composited animations" },
-    { data: usesTextCompressionData, title: "Enable text compression" },
-    { data: usesRelPreconnectData, title: "Preconnect to required origins" },
+    { Component: AvoidRedirectsResults, data: avoidRedirectsData, title: "Avoid multiple page redirects" },
+    { Component: UsesRelPreloadResults, data: usesRelPreloadData, title: "Preload key requests" },
+    { Component: EfficientAnimatedContentResults, data: efficientAnimatedContentData, title: "Use video formats for animated content" },
+    { Component: DuplicatedJavascriptResults, data: duplicatedJavascriptData, title: "Remove duplicate modules in JavaScript bundles" },
+    { Component: ThirdPartyFacadesResults, data: thirdPartyFacadesData, title: "Lazy load third-party resources with facades" },
+    { Component: LargestContentPaintResults, data: largestContentPaintData, title: "Largest Contentful Paint image was lazily loaded" },
+    { Component: PreloadLCPImageResults, data: preloadLCPImageData, title: "Preload Largest Contentful Paint image" },
+    { Component: LegacyJavascriptResults, data: legacyJavascriptData, title: "Avoid serving legacy JavaScript to modern browsers" },
+    { Component: bootupTimeResults, data: bootupTimeData, title: "Reduce JavaScript execution time" } ,
+    { Component: NonCompositedAnimationsResults, data: nonCompositedAnimationsData, title: "Avoid non-composited animations" },
+    { Component: UsesTextCompressionResults, data: usesTextCompressionData, title: "Enable text compression" },
+    { Component: UsesRelPreconnectResults, data: usesRelPreconnectData, title: "Preconnect to required origins" },
     // { data: viewportData, title: "Does not have a `\u003cmeta name=\"viewport\"\u003e` tag with `width` or `initial-scale`" }
-    { data: noDocumentWriteData, title: "Avoids `document.write()`" },
-
-    { data: networkRequestsData, title: "Network Requests" },
-    
-    
+    { Component: NoDocumentWriteResults, data: noDocumentWriteData, title: "Avoids `document.write()`" },
+    { Component: NetworkRequestsResults, data: networkRequestsData, title: "Network Requests" },
     // Add more result sections as needed
   ];
   const sortedResultSections = resultSections.sort((a, b) => {
@@ -162,665 +195,42 @@ const PageSpeedInsights = () => {
 
   const renderResultDetails = (resultSection) => {
     switch (resultSection.title) {
-      case "Unminified CSS":
-        return (
-          <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-              <p>Transfer Size: {bytesToKiB(item.totalBytes)} KiB</p>
-              <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
-            </li>
-          ))}
-        </ul>
-        );
-
-      case "Unminified JavaScript":
-        return (
-          <ul>
-            {resultSection.data.items && resultSection.data.items.map((item, index) => (
-              <li key={index}>
-                <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-                <p>Transfer Size: {bytesToKiB(item.totalBytes)} KiB</p>
-                <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
-              </li>
-            ))}
-          </ul>
-        );
-
-        case "Image elements do not have explicit `width` and `height`":
-      return (
-        <ul>
-        {resultSection.data.items && resultSection.data.items.map((item, index) => (
-          <li key={index}>
-            <p>{item.title}</p>
-            <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-            <p>Path: {item.path}</p>
-            <img src={item.url} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
-          </li>
-        ))}
-      </ul>
-      );
-
-    case "Reduce unused CSS":
-      return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-            <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-            <p>Transfer Size:  {bytesToKiB(item.totalBytes)} KiB</p>
-            <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
-            </li>
-          ))}
-        </ul>
-      );
-      
-      case "Reduce unused JavaScript":
-      return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-            <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-              <p>Transfer Size:  {bytesToKiB(item.totalBytes)} KiB</p>
-              <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
-            </li>
-          ))}
-        </ul>
-      );
-      
-      case "Reduce the impact of third-party code":
-      return (
-        <table>
-        <thead>
-          <tr>
-            <th>Third Party:</th>
-            <th>Transfer Size:</th>
-            <th>Main Thread Time: </th>
-          </tr>
-        </thead>
-        <tbody>
-        {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <tr key={index}>
-              <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-              <td>{bytesToKiB(item.transferSize)} KiB</td>
-              <td>{item.mainThreadTime} ms</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      );
-
-      
-
-
-      
-      case "Defer offscreen images":
-      return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-              <p>Transfer Size: {bytesToKiB(item.totalBytes)} KiB</p>
-              <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
-            </li>
-          ))}
-        </ul>
-      );
-      
-      case "Properly size images":
-      return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-              <p>Transfer Size: {bytesToKiB(item.totalBytes)} KiB</p>
-              <p>Potential Savings: {bytesToKiB(item.wastedBytes)} KiB</p>
-            </li>
-          ))}
-        </ul>
-      );
-      
-      case "Eliminate render-blocking resources":
-      return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-              <p>Total Bytes: {bytesToKiB(item.totalBytes)} KiB</p>
-              <p>Wasted Milliseconds: {item.wastedMs} ms</p>
-            </li>
-          ))}
-        </ul>
-      );
-
-      case "Minimize main-thread work":
-      return (
-        <table>
-        <thead>
-          <tr>
-            <th>category</th>
-            <th>Duration</th>
-          </tr>
-        </thead>
-        <tbody>
-        {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <tr key={index}>
-              <td>{item.groupLabel}</td>
-              <td>{item.duration.toFixed(0)} ms</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-      );
-
-      case "Avoid an excessive DOM size":
-      return (
-        <ul>
-          {resultSection.data.details && resultSection.data.details.map((item, index) => (
-            <li key={index}>
-              <p>Statistic: {item.statistic}</p>
-              <p>Node: {item.node ? item.node.selector : 'N/A'}</p>
-              <p>Value: {item.value}</p>
-            </li>
-          ))}
-        </ul>
-      );
-
-      case "Serve images in next-gen formats":
-      return (
-        <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>URL: <a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></p>
-              <p>Total Bytes: {item.totalBytes} bytes</p>
-              <p>Potential Savings: {item.wastedBytes} bytes</p>
-              {/* Add additional information from item.node if needed */}
-            </li>
-          ))}
-        </ul>
-      );
-
-      case "Serve static assets with an efficient cache policy":
-      return (
-       
-            <table>
-              <thead>
-                <tr>
-                  <th>URL</th>
-                  <th>Cache Lifetime</th>
-                </tr>
-              </thead>
-              <tbody>
-                {resultSection.data.items && resultSection.data.items.map((item, index) => (
-                  <tr key={index}>
-                    <td><a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></td>
-                    <td>{item.cacheLifetimeMs} ms</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-      );
-
-      case "Ensure text remains visible during webfont load":
-      return (
-        <table>
-          <thead>
-            <tr>
-              <th>URL</th>
-              <th>Potential Savings (ms)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-              <tr key={index}>
-                <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-                <td>{item.wastedMs}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-
-
-      case "Does not use passive listeners to improve scrolling performance":
-      return (
-     
-        <table>
-            <thead>
-              <tr>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-                <tr key={index}>
-                  <td>
-                    <p>URL: <a href={item.source.url} target="_blank" rel="noreferrer">{item.source.url}</a></p>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-      
-      );
-
-      case "Efficiently encode images":
-      return (
-        <table>
-        <thead>
-          <tr>
-            <th>URL</th>
-            <th>Resource Size</th>
-            <th>Potential Savings</th>
-          </tr>
-        </thead>
-        <tbody>
-         {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-            <tr key={index}>
-              <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-              <td>{item.totalBytes} bytes</td>
-              <td>{item.wastedBytes} bytes</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-      );
-
-      case "Avoid enormous network payloads":
-      return (
-        <table>
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th>Transfer Size</th>
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-                <tr key={index}>
-                  <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-                  <td>{item.totalBytes} bytes</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-      
-      );
-
-      case "Avoid long main-thread tasks":
-      return (
-        <table>
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th>Start Time (ms)</th>
-                <th>Duration (ms)</th>
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-                <tr key={index}>
-                  <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-                  <td>{item.startTime}</td>
-                  <td>{item.duration}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-      
-      );
-
-      case "Avoid large layout shifts":
-      return (
-        <table>
-            <thead>
-              <tr>
-                <th>Element</th>
-                <th>Weighted Score</th>
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.node && item.node.nodeLabel}</td>
-                  <td>{item.score.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-      );
-
-
-      case "User Timing marks and measures":
-      return (
-        <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Start Time</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.name}</td>
-                  <td>{item.timingType}</td>
-                  <td>{item.startTime} ms</td>
-                  <td>{item.duration} ms</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-      );
-
-
-      case "Server Response Time":
-      return (
-        <table>
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th>Time Spent (ms)</th>
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.items && resultSection.data.items.map((item, index) => (
-                <tr key={index}>
-                  <td><a target="_blank" href={item.url} rel="noreferrer">{item.url}</a></td>
-                  <td>{item.responseTime} ms</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-      );
-
-    
-
-  case "Avoid multiple page redirects":
-    return (
-      
-        <table>
-          <thead>
-            <tr>
-              <th>URL</th>
-              <th>Redirects</th>
-              <th>Wasted Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            { resultSection.data.items && resultSection.data.items.map((item, index) => (
-              <tr key={index}>
-                <td>{item.url}</td>
-                <td>{item.redirects}</td>
-                <td>{item.wastedMs.toFixed(2)} ms</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-     
-  );
-  
-  case "Preload key requests":
-    return (
-      
-      <table>
-      <thead>
-        <tr>
-          <th>URL</th>
-          <th>Total Blocking Time</th>
-        </tr>
-      </thead>
-      <tbody>
-      { resultSection.data.items && resultSection.data.items.map((item, index) => (
-          <tr key={index}>
-            <td>{item.url}</td>
-            <td>{item.totalBlockingTime.toFixed(2)} ms</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-     
-  );
-
-  case "Use video formats for animated content":
-    return (
-      <table>
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th>Total Blocking Time</th>
-              </tr>
-            </thead>
-            <tbody>
-            { resultSection.data.items && resultSection.data.items.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.url}</td>
-                  <td>{item.totalBlockingTime.toFixed(2)} ms</td>
-                </tr>
-              ))}
-            </tbody>
-      </table>
-  );
-
-  
-
+    case "Unminified CSS":
+    case "Unminified JavaScript":
+    case "Reduce Unused CSS":
+    case "Reduce Unused JavaScript":
+    case "Image elements do not have explicit `width` and `height`":
+    case "Reduce the impact of third-party code":
+    case "Defer offscreen images":
+    case "Properly size images":
+    case "Eliminate render-blocking resources":
+    case "Minimize main-thread work":
+    case "Avoid an excessive DOM size":
+    case "Serve images in next-gen formats":
+    case "Serve static assets with an efficient cache policy":
+    case "Ensure text remains visible during webfont load":
+    case "Does not use passive listeners to improve scrolling performance":
+    case "Efficiently encode images":
+    case "Avoid enormous network payloads":
+    case "Avoid long main-thread tasks":
+    case "Avoid large layout shifts":
+    case "User Timing marks and measures":
+    case "Server Response Time":
+    case "Avoid multiple page redirects":
+    case "Preload key requests":
+    case "Use video formats for animated content":
     case "Remove duplicate modules in JavaScript bundles":
-      return (
-        <table>
-              <thead>
-                <tr>
-                  <th>URL</th>
-                  <th>Total Bytes</th>
-                  <th>Wasted Bytes</th>
-                </tr>
-              </thead>
-              <tbody>
-              {resultSection.data.items && resultSection.data.items.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.url}</td>
-                    <td>{item.totalBytes}</td>
-                    <td>{item.wastedBytes}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-    );
-
     case "Lazy load third-party resources with facades":
-      return (
-          <table>
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th>Facades</th>
-                <th>Wasted Ms</th>
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.items && resultSection.data.items.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.url}</td>
-                  <td>{item.facades}</td>
-                  <td>{item.wastedMs.toFixed(2)} ms</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-    );
-     
     case "Largest Contentful Paint image was lazily loaded":
-        return (
-          <ul>
-          {resultSection.data.items && resultSection.data.items.map((item, index) => (
-            <li key={index}>
-              <p>{item.title}</p>
-              <p>Path: {item.path}</p>
-              <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
-            </li>
-          ))}
-        </ul> );
-
-
-      case "Preload Largest Contentful Paint image":
-      return (
-        <ul>
-        {resultSection.data.items && resultSection.data.items.map((item, index) => (
-          <li key={index}>
-            <p>{item.title}</p>
-            <p>Path: {item.path}</p>
-            <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
-          </li>
-        ))}
-      </ul> );
-
-
-            case "Avoid serving legacy JavaScript to modern browsers":
-              return (
-                <table>
-                    <thead>
-                      <tr>
-                        <th>URL</th>
-                        <th>Transfer Size</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-                        <tr key={index}>
-                          <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-                          <td>{item.totalBytes} bytes</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-             
-              );
-
-
-              case "Reduce JavaScript execution time":
-              return (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>URL</th>
-                      <th>Total CPU Time</th>
-                      <th>Script Evaluation</th>
-                      <th>Script Parse</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {resultSection.data.details && resultSection.data.details.items.map((item, index) => (
-                      <tr key={index}>
-                        <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-                        <td>{item.total.toFixed(0)} ms</td>
-                        <td>{item.scripting.toFixed(0)} ms</td>
-                        <td>{item.scriptParseCompile.toFixed(0)} ms</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-             
-              );
-
-
-              case "Avoid non-composited animations":
-                return (
-                  <ul>
-                  {resultSection.data.items && resultSection.data.items.map((item, index) => (
-                    <li key={index}>
-                      <p>{item.title}</p>
-                      <p>Path: {item.path}</p>
-                      <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
-                    </li>
-                  ))}
-                </ul> );
-
-
-                  case "Enable text compression":
-                    return (
-                      <ul>
-                      {resultSection.data.items && resultSection.data.items.map((item, index) => (
-                        <li key={index}>
-                          <p>{item.title}</p>
-                          <p>Path: {item.path}</p>
-                          <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
-                        </li>
-                      ))}
-                    </ul> );
-                    case "Avoids `document.write()`":
-                      return (
-                        <ul>
-                        {resultSection.data.items && resultSection.data.items.map((item, index) => (
-                          <li key={index}>
-                            <p>{item.title}</p>
-                            <p>Path: {item.path}</p>
-                            <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
-                          </li>
-                        ))}
-                      </ul> );
-
-                      case  "Preconnect to required origins":
-                        return (
-                        
-                            <div>
-                              <h3>Warnings:</h3>
-                              <ul>
-                              {usesRelPreconnectData.warnings && usesRelPreconnectData.warnings.map((warning, index) => (
-                                  <li key={index}>{warning}</li>
-                                ))}
-                              </ul>
-                            </div>
-                        );
-
-      case "Network Requests":
-
-      return (
-        <table>
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th>Resource Type</th>
-                <th>Resource Size</th>
-                <th>Network Request Time</th>
-                <th>Priority</th>
-                
-              </tr>
-            </thead>
-            <tbody>
-            {resultSection.data.details &&
-              resultSection.data.details.items
-                .sort((a, b) => {
-                  if (a.priority === "Low" && b.priority !== "Low") {
-                    return -1; // Low priority comes first
-                  } else if (a.priority !== "Low" && b.priority === "Low") {
-                    return 1; // Non-Low priority comes first
-                  } else if (a.priority === "Low" && b.priority === "Low") {
-                    // If both are Low priority, sort by resource size in descending order
-                    return b.resourceSize - a.resourceSize;
-                  } else {
-                    // If priorities are the same, sort by resource size in ascending order
-                    return a.resourceSize - b.resourceSize;
-                  }
-                })
-                .map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <a target="_blank" href={item.url} rel="noreferrer">
-                        {item.url}
-                      </a>
-                    </td>
-                    <td>{item.resourceType}</td>
-                    <td>{item.resourceSize}</td>
-                    <td>{item.networkRequestTime}</td>
-                    <td>{item.priority}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-      );
+    case "Preload Largest Contentful Paint image":
+    case "Avoid serving legacy JavaScript to modern browsers":
+    case "Reduce JavaScript execution time":
+    case "Avoid non-composited animations":
+    case "Enable text compression":
+    case "Avoids `document.write()`":
+    case  "Preconnect to required origins":
+    case "Network Requests":
+      return <resultSection.Component data={resultSection.data} />;
 
       // Add cases for other result sections
 
@@ -1918,7 +1328,7 @@ const sortNetworkRequests = (items) => {
         {/* Add the following code to display CO2e per new visit */}
         {totalByteWeight > 0 && (
           <div className="result-section">
-            <h2>CO2e per New Visit</h2>
+            <h2>Carbon Footprint</h2>
             <p>Total Byte Weight: {bytesToKiB(newTotalByteWeightMB)} MB</p>
             <p>CO2e per New Visit: {calculateCO2ePerNewVisit(totalByteWeight)} gm</p>
           </div>
@@ -1975,8 +1385,6 @@ const sortNetworkRequests = (items) => {
           <div className="result-section">
             <h3>{networkRequestsData.title}</h3>
             <p>{networkRequestsData.description}</p>
-            <p>Score: {networkRequestsData.score}</p>
-            <p>Score Display Mode: {networkRequestsData.scoreDisplayMode}</p>
             {networkRequestsData.details && (
               <div>
                 <h3>Details:</h3>
