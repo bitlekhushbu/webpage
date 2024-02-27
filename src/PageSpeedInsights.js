@@ -8,6 +8,7 @@ import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
 import { CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UnminifiedCssResults from './UnminifiedCssResults'; 
 import UnminifiedJavascriptResults from './UnminifiedJavascriptResults'; 
@@ -1313,7 +1314,7 @@ const sortNetworkRequests = (items) => {
             <CircularProgress
               variant="determinate"
               value={lighthouseMetrics['Performance']}
-              size={120}
+              size={150}
               style={{
                 borderRadius: '50%',
                 background: lighthouseMetrics['Performance'] >= 60 ? '#8FDB86' : lighthouseMetrics['Performance'] >= 41 ? '#FFD700' : '#FF6961',
@@ -1330,7 +1331,7 @@ const sortNetworkRequests = (items) => {
               alignItems="center"
               justifyContent="center"
             >
-              <h2 style={{ fontSize: '32px', margin: '0px' }}>
+              <h2 style={{ fontSize: '42px', margin: '0px' }}>
                 {`${lighthouseMetrics['Performance'].toFixed(0)}`}
               </h2>
             </Box>
@@ -1408,38 +1409,39 @@ const sortNetworkRequests = (items) => {
 
         {Object.keys(networkRequestsData).length > 0 && (
           <div className="result-section">
-            <h3>{networkRequestsData.title}</h3>
+            <h2>{networkRequestsData.title}</h2>
             <p>{networkRequestsData.description}</p>
             {networkRequestsData.details && (
               <div>
-                <h3>Details:</h3>
                 {networkRequestsData.details.items && (
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>URL</th>
-                        <th>Resource Type</th>
-                        <th>Resource Size</th>
-                        <th>Network Request Time</th>
-                        <th>Priority</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortNetworkRequests(networkRequestsData.details.items).map((item, index) => (
-                        <tr key={index}>
-                          <td>
-                            <a target="_blank" href={item.url} rel="noreferrer">
-                              {item.url}
-                            </a>
-                          </td>
-                          <td>{item.resourceType}</td>
-                          <td>{item.resourceSize}</td>
-                          <td>{item.networkRequestTime}</td>
-                          <td>{item.priority}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>URL</TableCell>
+                          <TableCell>Resource Type</TableCell>
+                          <TableCell>Resource Size</TableCell>
+                          <TableCell>Network Request Time</TableCell>
+                          <TableCell>Priority</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {sortNetworkRequests(networkRequestsData.details.items).map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell>
+                              <Link href={item.url} target="_blank" rel="noreferrer">
+                                {item.url}
+                              </Link>
+                            </TableCell>
+                            <TableCell>{item.resourceType}</TableCell>
+                            <TableCell>{item.resourceSize}</TableCell>
+                            <TableCell>{item.networkRequestTime}</TableCell>
+                            <TableCell>{item.priority}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 )}
               </div>
             )}
