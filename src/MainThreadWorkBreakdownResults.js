@@ -1,27 +1,29 @@
 // MainThreadWorkBreakdownResults.js
 import React from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 
 const MainThreadWorkBreakdownResults = ({ data }) => {
-    return (
-        <table>
-        <thead>
-          <tr>
-            <th>category</th>
-            <th>Duration</th>
-          </tr>
-        </thead>
-        <tbody>
-        {data.items && data.items.map((item, index) => (
-            <tr key={index}>
-              <td>{item.groupLabel}</td>
-              <td>{item.duration.toFixed(0)} ms</td>
-            </tr>
+  return (
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Category</TableCell>
+            <TableCell>Duration</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.items && data.items.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.groupLabel}</TableCell>
+              <TableCell>{item.duration.toFixed(0)} ms</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-      
-      );
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
     };
 
 export default MainThreadWorkBreakdownResults;

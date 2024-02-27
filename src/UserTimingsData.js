@@ -1,29 +1,31 @@
 // UserTimingsData.js
 import React from 'react';
-
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const UserTimingsData = ({ data }) => {
-    return (
-        <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Start Time</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-            {data.details && data.details.items.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.name}</td>
-                  <td>{item.timingType}</td>
-                  <td>{item.startTime} ms</td>
-                  <td>{item.duration} ms</td>
-                </tr>
+      return (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Start Time</TableCell>
+                <TableCell>Duration</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.details && data.details.items.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.timingType}</TableCell>
+                  <TableCell>{item.startTime} ms</TableCell>
+                  <TableCell>{item.duration} ms</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
+        </TableContainer>
       );
     };
 

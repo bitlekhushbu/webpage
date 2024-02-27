@@ -1,27 +1,34 @@
 // LongTasksResults.js
 import React from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
 
 
 const LongTasksResults = ({ data }) => {
-    return (
-        <table>
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th>Start Time (ms)</th>
-                <th>Duration (ms)</th>
-              </tr>
-            </thead>
-            <tbody>
-            {data.details && data.details.items.map((item, index) => (
-                <tr key={index}>
-                  <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-                  <td>{item.startTime}</td>
-                  <td>{item.duration}</td>
-                </tr>
+  return (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>URL</TableCell>
+                <TableCell>Start Time (ms)</TableCell>
+                <TableCell>Duration (ms)</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.details && data.details.items.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Link href={item.url} target="_blank" rel="noreferrer">
+                      {item.url}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{item.startTime}</TableCell>
+                  <TableCell>{item.duration}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
+        </TableContainer>
       );
     };
 

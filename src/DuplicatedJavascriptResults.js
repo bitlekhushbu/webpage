@@ -1,29 +1,32 @@
 //DuplicatedJavascriptResults.js
 import React from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 
 const DuplicatedJavascriptResults = ({ data }) => {
 
-    return (
-        <table>
-              <thead>
-                <tr>
-                  <th>URL</th>
-                  <th>Total Bytes</th>
-                  <th>Wasted Bytes</th>
-                </tr>
-              </thead>
-              <tbody>
-              { data.items && data.items.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.url}</td>
-                    <td>{item.totalBytes}</td>
-                    <td>{item.wastedBytes}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-    );
+  return (
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>URL</TableCell>
+            <TableCell>Total Bytes</TableCell>
+            <TableCell>Wasted Bytes</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.items && data.items.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.url}</TableCell>
+              <TableCell>{item.totalBytes}</TableCell>
+              <TableCell>{item.wastedBytes}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
   
 };
 

@@ -1445,6 +1445,8 @@ const sortNetworkRequests = (items) => {
                 )}
               </div>
             )}
+            <br/>
+            <br/>
             <hr />
           </div>
         )}

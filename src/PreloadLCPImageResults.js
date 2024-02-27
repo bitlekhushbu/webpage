@@ -1,18 +1,38 @@
 // PreloadLCPImageResults.js
 import React from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Avatar } from '@mui/material';
 
 
 const PreloadLCPImageResults = ({ data }) => {
-    return (
-        <ul>
+   
+return (
+  <TableContainer component={Paper}>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Title</TableCell>
+          <TableCell>Path</TableCell>
+          <TableCell>Image</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
         {data.items && data.items.map((item, index) => (
-          <li key={index}>
-            <p>{item.title}</p>
-            <p>Path: {item.path}</p>
-            <img src={item.path} alt={item.title} style={{ maxWidth: '100%', height: 'auto' }} />
-          </li>
+          <TableRow key={index}>
+            <TableCell>
+              <Typography>{item.title}</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography>Path: {item.path}</Typography>
+            </TableCell>
+            <TableCell>
+              <Avatar alt={item.title} src={item.path} variant="rounded" />
+            </TableCell>
+          </TableRow>
         ))}
-      </ul> );
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
   
 };
 

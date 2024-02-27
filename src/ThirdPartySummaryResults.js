@@ -1,5 +1,6 @@
 // ThirdPartySummaryResults.js
 import React from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const bytesToKiB = (bytes) => {
     return (bytes / 1024).toFixed(2);
@@ -8,24 +9,30 @@ const bytesToKiB = (bytes) => {
 
 const ThirdPartySummaryResults = ({ data }) => {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Third Party:</th>
-          <th>Transfer Size:</th>
-          <th>Main Thread Time: </th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.items && data.items.map((item, index) => (
-          <tr key={index}>
-            <td><a href={item.url} target="_blank" rel="noreferrer">{item.url}</a></td>
-            <td>{bytesToKiB(item.transferSize)} KiB</td>
-            <td>{item.mainThreadTime} ms</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Third Party:</TableCell>
+            <TableCell>Transfer Size:</TableCell>
+            <TableCell>Main Thread Time: </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.items && data.items.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>
+                <a href={item.url} target="_blank" rel="noreferrer">
+                  {item.url}
+                </a>
+              </TableCell>
+              <TableCell>{bytesToKiB(item.transferSize)} KiB</TableCell>
+              <TableCell>{item.mainThreadTime} ms</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

@@ -96,4 +96,6 @@ body{
     grid-template-columns: 1fr 1fr;
   }
 
-  
+  #results .MuiPaper-root{
+    box-shadow: none;
+  }

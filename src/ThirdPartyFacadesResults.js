@@ -1,27 +1,29 @@
 // ThirdPartyFacadesResults.js
 import React from 'react';
-
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const ThirdPartyFacadesResults = ({ data }) => {
-    return (
-        <table>
-          <thead>
-            <tr>
-              <th>URL</th>
-              <th>Facades</th>
-              <th>Wasted Ms</th>
-            </tr>
-          </thead>
-          <tbody>
+  return (
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>URL</TableCell>
+            <TableCell>Facades</TableCell>
+            <TableCell>Wasted Ms</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {data.items && data.items.map((item, index) => (
-              <tr key={index}>
-                <td>{item.url}</td>
-                <td>{item.facades}</td>
-                <td>{item.wastedMs.toFixed(2)} ms</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            <TableRow key={index}>
+              <TableCell>{item.url}</TableCell>
+              <TableCell>{item.facades}</TableCell>
+              <TableCell>{item.wastedMs.toFixed(2)} ms</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
   
 };
