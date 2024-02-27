@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import { CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UnminifiedCssResults from './UnminifiedCssResults'; 
 import UnminifiedJavascriptResults from './UnminifiedJavascriptResults'; 
@@ -1306,18 +1306,40 @@ const sortNetworkRequests = (items) => {
       {isDataLoaded && (
       <div className="container" id="results">
         
-
-        {/* Display 'Performance' metric separately */}
-          { lighthouseMetrics['Performance'] !== undefined && (
-            <div className="result-section">
-              <h2>Overall score</h2>
-              <p>
-                Performance Score: {lighthouseMetrics['Performance'].toFixed(0)}
-              </p>
-              {/* Add conditional sentences based on the performance score and selected device */}
-             <p> {getPerformanceSentence(selectedDevice, lighthouseMetrics['Performance'])}</p>
-            </div>
-          )}
+      { lighthouseMetrics['Performance'] !== undefined && (
+        <div className="result-section">
+          <h2>Overall score</h2>
+          <Box position="relative" display="inline-flex">
+            <CircularProgress
+              variant="determinate"
+              value={lighthouseMetrics['Performance']}
+              size={120}
+              style={{
+                borderRadius: '50%',
+                background: lighthouseMetrics['Performance'] >= 60 ? '#8FDB86' : lighthouseMetrics['Performance'] >= 41 ? '#FFD700' : '#FF6961',
+                color: lighthouseMetrics['Performance'] >= 60 ? '#4CAF50' : lighthouseMetrics['Performance'] >= 41 ? '#FFA500' : '#FF0000',
+              }}
+            />
+            <Box
+              top={0}
+              left={0}
+              bottom={0}
+              right={0}
+              position="absolute"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <h2 style={{ fontSize: '32px', margin: '0px' }}>
+                {`${lighthouseMetrics['Performance'].toFixed(0)}`}
+              </h2>
+            </Box>
+          </Box>
+          {/* Add conditional sentences based on the performance score and selected device */}
+          <p> {getPerformanceSentence(selectedDevice, lighthouseMetrics['Performance'])}</p>
+        </div>
+      )}
+      
       
         {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
