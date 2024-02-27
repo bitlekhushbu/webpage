@@ -1338,7 +1338,7 @@ const sortNetworkRequests = (items) => {
         {Object.keys(thumbnailData).length > 0 && (
           <div className="result-section">
             <h2>Filmstrip</h2>
-            <ul style={{display:'flex', listStyle:'none', width:'100%'}}>
+            <ul style={{display:'flex', listStyle:'none', width:'100%', gap:'15px', paddingLeft:'0px'}}>
               {thumbnailData.items.map((item, index) => (
                 <li key={index}>
                 <img src={item.data} alt="Full Page Screenshot" />
