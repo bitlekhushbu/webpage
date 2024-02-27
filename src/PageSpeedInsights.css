@@ -1,7 +1,12 @@
+body{
+  background:#fafafb;
+}
+
 .container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
+    
   }
  
   form {
@@ -67,7 +72,28 @@
     word-break: break-word;
   }
 
+  .metric_card_title{
+    margin:0px;
+    font-weight: 400;
+    /* font-size: 0.875rem; */
+    line-height: 1.57;
+    font-family: "Public Sans", sans-serif;
+    color: rgb(140, 140, 140);
+  }
 
-  
+
+  .metric_card_value{
+    margin: 0px;
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    font-family: "Public Sans", sans-serif;
+    color: inherit;
+  }
+
+  .grid_container_main{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 
   

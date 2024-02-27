@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Grid, Card, CardContent} from '@material-ui/core';
 // import { Bar } from 'react-chartjs-2';
 // import { Doughnut } from 'react-chartjs-2';
 import { CategoryScale } from 'chart.js';
@@ -1024,34 +1025,18 @@ const totalUrls = networkRequestsItems ? networkRequestsItems.length : 0;
 let totalByteWeightKiB = parseFloat(lighthouseData.audits['total-byte-weight'].displayValue.replace(/[^\d.]/g, ''));
 let totalByteWeightMB = totalByteWeightKiB / 1024;
 let newTotalByteWeightMB = totalByteWeightMB.toFixed(2);
+let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
       const lighthouseMetricsData = {
         'Performance': lighthouseData.categories.performance.score * 100,
-        // 'Timing': lighthouseData.timing.total,
         'Total Blocking Time': lighthouseData.audits['total-blocking-time'].numericValue / 1000,
         'First Contentful Paint': lighthouseData.audits['first-contentful-paint'].displayValue,
         'Largest Contentful Paint': lighthouseData.audits['largest-contentful-paint'].displayValue,
         'Speed Index': lighthouseData.audits['speed-index'].displayValue,
-        // 'Time To Interactive': lighthouseData.audits['interactive'].displayValue,
-        // 'First Meaningful Paint': lighthouseData.audits['first-meaningful-paint'].displayValue,
-        // 'Server Response Time': lighthouseData.audits['server-response-time'].displayValue,
         'Cumulative Layout Shift': lighthouseData.audits['cumulative-layout-shift'].displayValue,
-        // 'First Input Delay': lighthouseData.audits['first-input-delay'].displayValue,
-        // 'Time To First Byte': lighthouseData.audits['time-to-first-byte'].displayValue,
-        // 'Estimated Input Latency': lighthouseData.audits['estimated-input-latency'].displayValue,
-            'First Input Delay': lighthouseData.audits['max-potential-fid'].numericValue  / 1000,
-        // 'First CPU Idle': lighthouseData.audits['first-cpu-idle'].displayValue,
-         'Total Byte Weight': newTotalByteWeightMB,
-        // 'DOM Size': lighthouseData.audits['dom-size'].numericValue,
-        // 'Bootup Time': lighthouseData.audits['bootup-time'].displayValue,
+        'First Input Delay': lighthouseData.audits['max-potential-fid'].numericValue  / 1000,
+        'Total Byte Weight': newTotalByteWeightMBText,
         'Network Requests': totalUrls,
-        // 'Network RTT': lighthouseData.audits['network-server-latency'].numericValue,
-        // 'Redirects': lighthouseData.audits['redirects'].numericValue,
-        // 'Interactive Elements': lighthouseData.audits['interactive-elements'].numericValue,
-        // 'Unused CSS': lighthouseData.audits['unused-css-rules'].numericValue,
-        // 'Total JavaScript Size': lighthouseData.audits['total-javascript-size'].numericValue,
-        // 'Render Blocking Resources': lighthouseData.audits['render-blocking-resources'].numericValue,
-     
       };
      
 
@@ -1112,64 +1097,82 @@ let newTotalByteWeightMB = totalByteWeightMB.toFixed(2);
     console.log('Latest value one', fcpValue);
  
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>Metrics</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(metrics).map((key, index) => {
-            const colorCategory =
-              key === 'Total Blocking Time'
-                ? tbtCategory
-                : key === 'First Input Delay'
-                ? fidCategory
-                : key === 'First Contentful Paint'
-                ? fcpCategory
-                : key === 'Largest Contentful Paint'
-                ? lcpCategory
-                : key === 'Speed Index'
-                ? speedIndexCategory
-                : key === 'Cumulative Layout Shift'
-                ? clsCategory
-                : '';
-    
-            const displayValue =
-              key === 'First Input Delay'
-                ? `${metrics[key].toFixed(2)} s (${colorCategory})` // Add "s" next to value
-                : key === 'Total Blocking Time'
-                ? `${metrics[key].toFixed(2)} s (${colorCategory})`
-                : key === 'First Contentful Paint' ||
-                  key === 'Largest Contentful Paint' ||
-                  key === 'Speed Index' ||
-                  key === 'Cumulative Layout Shift'
-                ? `${metrics[key]} (${colorCategory})`
-                : metrics[key];
-    
-            return (
-              <tr key={index}>
-                <td>{key}</td>
-                <td>
-                  {key === 'Total Blocking Time' ||
-                  key === 'First Input Delay' ||
-                  key === 'First Contentful Paint' ||
-                  key === 'Largest Contentful Paint' ||
-                  key === 'Speed Index' ||
-                  key === 'Cumulative Layout Shift' ? (
-                    <span style={{ color: getColorBasedOnCategory(colorCategory) }}>
-                      {displayValue}
-                    </span>
-                  ) : (
-                    displayValue
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <Grid container spacing={3}>
+        {Object.keys(metrics).map((key, index) => {
+          const colorCategory =
+            key === 'Total Blocking Time'
+              ? tbtCategory
+              : key === 'First Input Delay'
+              ? fidCategory
+              : key === 'First Contentful Paint'
+              ? fcpCategory
+              : key === 'Largest Contentful Paint'
+              ? lcpCategory
+              : key === 'Speed Index'
+              ? speedIndexCategory
+              : key === 'Cumulative Layout Shift'
+              ? clsCategory
+              : '';
+
+          const displayValue =
+            key === 'First Input Delay'
+              ? 
+              <span>
+                <span>
+                  {metrics[key].toFixed(2)} s
+                </span>
+                <span style={{ marginLeft: '4px', color: getColorBasedOnCategory(colorCategory) }}>
+                  ({colorCategory})
+                </span>
+             </span>
+              : key === 'Total Blocking Time'
+              ? 
+              <span>
+                 {metrics[key].toFixed(2)} s
+                  <span style={{ marginLeft: '4px', color: getColorBasedOnCategory(colorCategory) }}>
+                    ({colorCategory})
+                  </span>
+               </span>
+              : key === 'First Contentful Paint' ||
+                key === 'Largest Contentful Paint' ||
+                key === 'Speed Index' ||
+                key === 'Cumulative Layout Shift'
+              ? 
+              <span>
+              {metrics[key]}
+              <span style={{ marginLeft: '4px', color: getColorBasedOnCategory(colorCategory) }}>
+                ({colorCategory})
+              </span>
+            </span>
+              : metrics[key];
+
+          return (
+            <Grid item xs={3} key={index}>
+              <Card variant="outlined">
+                <CardContent>
+                  <h4 className="metric_card_title">
+                    {key}
+                  </h4>
+                  <h3 className="metric_card_value">
+                    {key === 'Total Blocking Time' ||
+                    key === 'First Input Delay' ||
+                    key === 'First Contentful Paint' ||
+                    key === 'Largest Contentful Paint' ||
+                    key === 'Speed Index' ||
+                    key === 'Cumulative Layout Shift' ? (
+                      <span>
+                        {displayValue}
+                      </span>
+                    ) : (
+                      displayValue
+                    )}
+                  </h3>
+                </CardContent>
+              </Card>
+            </Grid>
+          );
+        })}
+      </Grid>
     );
   };
  
@@ -1316,10 +1319,8 @@ const sortNetworkRequests = (items) => {
       
         {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
-            <h2>Lighthouse Results</h2>
-            {renderTable(filterOutPerformanceMetric(lighthouseMetrics))}
-         
-            {/*{renderBarChart(lighthouseMetrics, 'Lighthouse Metrics')}*/}
+            <h2>Metric Overview</h2>
+            {renderTable(filterOutPerformanceMetric(lighthouseMetrics))} 
             <br/>
             <br/>
           </div>
