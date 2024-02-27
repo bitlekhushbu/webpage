@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
-
 // import { Bar } from 'react-chartjs-2';
 // import { Doughnut } from 'react-chartjs-2';
 import { CategoryScale } from 'chart.js';
