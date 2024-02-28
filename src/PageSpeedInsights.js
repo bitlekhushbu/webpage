@@ -1258,20 +1258,22 @@ const sortNetworkRequests = (items) => {
     <div className="container" id="main">
       <h1>Webpage Speed Test</h1>
       <form onSubmit={getPageSpeedInsights}>
-        <div>
-          <label>Enter URL to Test Page Speed:</label>
-          <input id="url" name="url" type="text" />
-
-        
+      <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>Enter URL to Test Page Speed:</label>
+          <input id="url" name="url" type="text" required/>
+      </div>
+      <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>Select Device:</label>
           <select value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)}>
             <option value="desktop">Desktop</option>
             <option value="mobile">Mobile</option>
           </select>
-
-         
-
-          <button type="submit">Submit</button>
         </div>
+        <div>
+      <button type="submit" variant="contained" color="primary">
+        Submit
+      </button>
+    </div>
       </form>
       <p id="loading">{loadingMessage}</p>
       {isLoading ? (
