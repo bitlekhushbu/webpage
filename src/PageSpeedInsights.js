@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
-import { LinearProgress, CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import { Divider, LinearProgress, CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UnminifiedCssResults from './UnminifiedCssResults'; 
@@ -86,12 +86,12 @@ const PageSpeedInsights = () => {
   const [duplicatedJavascriptData, setDuplicatedJavascriptData] = useState({});
   const [thirdPartyFacadesData, setThirdPartyFacadesData] = useState({});
   const [largestContentPaintData, setLargestContentPaintData] = useState({});
-   const [preloadLCPImageData, setPreloadLCPImageData] = useState({});
-   const [legacyJavascriptData, setLegacyJavascriptData] = useState({});  
-   const [bootupTimeData, setBootupTimeData] = useState({});    
-   const [nonCompositedAnimationsData, setNonCompositedAnimationsData] = useState({});  
-   const [usesTextCompressionData, setUsesTextCompressionData] = useState({});    
-   const [usesRelPreconnectData, setUsesRelPreconnectData] = useState({});
+  const [preloadLCPImageData, setPreloadLCPImageData] = useState({});
+  const [legacyJavascriptData, setLegacyJavascriptData] = useState({});  
+  const [bootupTimeData, setBootupTimeData] = useState({});    
+  const [nonCompositedAnimationsData, setNonCompositedAnimationsData] = useState({});  
+  const [usesTextCompressionData, setUsesTextCompressionData] = useState({});    
+  const [usesRelPreconnectData, setUsesRelPreconnectData] = useState({});
   const [noDocumentWriteData, setNoDocumentWriteData] = useState({}); 
   const [networkRequestsData, setNetworkRequestsData] = useState({});
   
@@ -1221,11 +1221,11 @@ const categorizeCLS = (clsValue) => {
 const getColorBasedOnCategory = (category) => {
   switch (category) {
     case 'Good':
-      return 'green';
+      return '#00C853';
     case 'Needs Improvement':
-      return 'orange';
+      return '#FFA500';
     case 'Poor':
-      return 'red';
+      return '#FF0000';
     default:
       return '';
   }
@@ -1295,8 +1295,8 @@ const sortNetworkRequests = (items) => {
               size={150}
               style={{
                 borderRadius: '50%',
-                background: lighthouseMetrics['Performance'] >= 60 ? '#8FDB86' : lighthouseMetrics['Performance'] >= 41 ? '#FFD700' : '#FF6961',
-                color: lighthouseMetrics['Performance'] >= 60 ? '#4CAF50' : lighthouseMetrics['Performance'] >= 41 ? '#FFA500' : '#FF0000',
+                background: lighthouseMetrics['Performance'] >= 60 ? '#B9F6CA' : lighthouseMetrics['Performance'] >= 41 ? '#FBE9E7' : '#EF9A9A',
+                color: lighthouseMetrics['Performance'] >= 60 ? '#00C853' : lighthouseMetrics['Performance'] >= 41 ? '#FFA500' : '#FF0000',
               }}
             />
             <Box
@@ -1319,7 +1319,8 @@ const sortNetworkRequests = (items) => {
         </div>
       )}
       
-      
+      <Divider />
+
         {Object.keys(lighthouseMetrics).length > 0 && (
           <div className="result-section">
             <h2>Metric Overview</h2>
@@ -1328,6 +1329,7 @@ const sortNetworkRequests = (items) => {
             <br/>
           </div>
         )}
+      <Divider />
 
         {/* Add the following code to display CO2e per new visit */}
         {totalByteWeight > 0 && (
@@ -1337,6 +1339,8 @@ const sortNetworkRequests = (items) => {
             <p>CO2e per New Visit: {calculateCO2ePerNewVisit(totalByteWeight)} gm</p>
           </div>
         )}
+     
+        <Divider />
 
         {Object.keys(thumbnailData).length > 0 && (
           <div className="result-section">
@@ -1353,6 +1357,8 @@ const sortNetworkRequests = (items) => {
           </div>
           )}
           
+          <Divider />
+
           {sortedResultSections && (
           <div>
           <h2>Opportunities</h2>
@@ -1383,7 +1389,7 @@ const sortNetworkRequests = (items) => {
           </div>
         )}
         
-
+        <Divider />
 
         {Object.keys(networkRequestsData).length > 0 && (
           <div className="result-section">
@@ -1425,9 +1431,10 @@ const sortNetworkRequests = (items) => {
             )}
             <br/>
             <br/>
-            <hr />
           </div>
         )}
+
+        <Divider />
 
         {screenshot && (
           <div className="result-section">
