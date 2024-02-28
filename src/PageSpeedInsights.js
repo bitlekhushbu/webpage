@@ -50,6 +50,7 @@ import NoDocumentWriteResults from './NoDocumentWriteResults'
 Chart.register(CategoryScale);
 
 const PageSpeedInsights = () => {
+  const [selectedLayoutClass, setSelectedLayoutClass] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [lighthouseMetrics, setLighthouseMetrics] = useState({});
@@ -1013,12 +1014,13 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
        
       setLighthouseMetrics(lighthouseMetricsData);
-      showFullPageScreenshot(lighthouseData.fullPageScreenshot);
+      showFullPageScreenshot(lighthouseData.audits['final-screenshot']);
        
      
       const totalByteWeightValue = lighthouseData.audits['total-byte-weight'].numericValue;
       setTotalByteWeight(totalByteWeightValue);
 
+      setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
 
       setTimeout(() => {
         // Once data is loaded, set isDataLoaded to true
@@ -1049,7 +1051,7 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
   
 
   const showFullPageScreenshot = (screenshotData) => {
-    setScreenshot(screenshotData.screenshot.data);
+    setScreenshot(screenshotData.details.data);
   };
 
   const renderTable = (metrics) => {
@@ -1283,8 +1285,8 @@ const sortNetworkRequests = (items) => {
         </div>
       ) : (
         isDataLoaded && (
-      <div className="container" id="results">
-        
+      <div className={`container ${selectedLayoutClass}`} id="results">
+       <div className='grid_container_main'> 
       { lighthouseMetrics['Performance'] !== undefined && (
         <div className="result-section">
           <h2>Overall score</h2>
@@ -1292,7 +1294,7 @@ const sortNetworkRequests = (items) => {
             <CircularProgress
               variant="determinate"
               value={lighthouseMetrics['Performance']}
-              size={150}
+              size={200}
               style={{
                 borderRadius: '50%',
                 background: lighthouseMetrics['Performance'] >= 60 ? '#B9F6CA' : lighthouseMetrics['Performance'] >= 41 ? '#FBE9E7' : '#EF9A9A',
@@ -1318,7 +1320,13 @@ const sortNetworkRequests = (items) => {
           <p> {getPerformanceSentence(selectedDevice, lighthouseMetrics['Performance'])}</p>
         </div>
       )}
-      
+
+      {screenshot && (
+        <div className="result-section final-screenshot-load">
+          <img src={screenshot} alt="Full Page Screenshot" />
+        </div>
+      )}
+      </div>
       <Divider />
 
         {Object.keys(lighthouseMetrics).length > 0 && (
@@ -1356,7 +1364,7 @@ const sortNetworkRequests = (items) => {
             <br/>
           </div>
           )}
-          
+
           <Divider />
 
           {sortedResultSections && (

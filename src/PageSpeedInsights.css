@@ -62,7 +62,6 @@ body{
  
   img {
     width: 100%;
-    max-width: 600px;
     height: auto;
     display: block;
     margin: 0 auto;
@@ -99,3 +98,11 @@ body{
   #results .MuiPaper-root{
     box-shadow: none;
   }
+
+  .final-screenshot-load img{
+      max-width: 200px;
+  }
+
+  .desktop-layout  .final-screenshot-load img{
+    max-width: 400px;
+}
