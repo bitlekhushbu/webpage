@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
-import { CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import { LinearProgress, CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UnminifiedCssResults from './UnminifiedCssResults'; 
@@ -51,6 +51,7 @@ Chart.register(CategoryScale);
 
 const PageSpeedInsights = () => {
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [lighthouseMetrics, setLighthouseMetrics] = useState({});
   const [totalByteWeight, setTotalByteWeight] = useState(0);
   const [screenshot, setScreenshot] = useState('');
@@ -65,66 +66,33 @@ const PageSpeedInsights = () => {
   const [thirdPartySummaryData, setThirdPartySummaryData] = useState({});
   const [usesResponsiveImagesData, setUsesResponsiveImagesData] = useState({});
   const [offscreenImagesData, setOffscreenImagesData] = useState({});
-  // Set state for Minimize Render-Blocking Resources
   const [renderBlockingResourcesData, setRenderBlockingResourcesData] = useState({});
-  // Set state for Main-Thread Work Breakdown
   const [mainThreadWorkBreakdownData, setMainThreadWorkBreakdownData] = useState({});
-  // Set state for DOM Size
   const [domSizeData, setDomSizeData] = useState({});
-  // Set state for Modern Image Formats
   const [modernImageFormatsData, setModernImageFormatsData] = useState({});
-  // Set state for Uses Long Cache TTL
   const [longCacheTTLData, setLongCacheTTLData] = useState({});
-  // Set state for font-display
   const [fontDisplayData, setFontDisplayData] = useState({});
-  // Set state for uses-passive-event-listeners
   const [usesPassiveEventListenersData, setUsesPassiveEventListenersData] = useState({});
-  // Set state for uses-optimized-images
   const [usesOptimizedImagesData, setUsesOptimizedImagesData] = useState({});
-  // Set state for total-byte-weight
   const [totalByteWeightData, setTotalByteWeightData] = useState({});  
-  // Set state for long-tasks
   const [longTasksData, setLongTasksData] = useState({});
-  // Set state for layout-shift-elements
   const [layoutShiftElementsData, setLayoutShiftElementsData] = useState({});
-  // Set state for user-timings
   const [userTimingsData, setUserTimingsData] = useState({});
-  // Set state for server-response-time
   const [serverResponseTimeData, setServerResponseTimeData] = useState({});
-  // Set state for critical-request-chains
   const [criticalRequestChainsData, setCriticalRequestChainsData] = useState({});
- 
-  // Set state for largest-contentful-paint-element
-  // Set state for avoid-multiple-page-redirects
   const [avoidRedirectsData, setAvoidRedirectsData] = useState({});
-  // Set state for uses-rel-preload
   const [usesRelPreloadData, setUsesRelPreloadData] = useState({});
-  // Set state for efficient-animated-content
   const [efficientAnimatedContentData, setEfficientAnimatedContentData] = useState({});
-  // Set state for duplicated-javascript
   const [duplicatedJavascriptData, setDuplicatedJavascriptData] = useState({});
-  // Set state for third-party-facades
   const [thirdPartyFacadesData, setThirdPartyFacadesData] = useState({});
-
   const [largestContentPaintData, setLargestContentPaintData] = useState({});
-  // Set state for largestContentPaintData
    const [preloadLCPImageData, setPreloadLCPImageData] = useState({});
-   // Set state for legacyJavascriptData
    const [legacyJavascriptData, setLegacyJavascriptData] = useState({});  
-   // Set state for bootupTimeData
    const [bootupTimeData, setBootupTimeData] = useState({});    
-   // Set state for nonCompositedAnimationsData
    const [nonCompositedAnimationsData, setNonCompositedAnimationsData] = useState({});  
-   // Set state for usesTextCompression
    const [usesTextCompressionData, setUsesTextCompressionData] = useState({});    
-    // Set state for usesRelPreconnect
    const [usesRelPreconnectData, setUsesRelPreconnectData] = useState({});
-
-  //  const [viewportData, setViewportData] = useState({});  largestContentfulaint-element
   const [noDocumentWriteData, setNoDocumentWriteData] = useState({}); 
-  
-
-   // Set state for network-requests
   const [networkRequestsData, setNetworkRequestsData] = useState({});
   
    
@@ -248,7 +216,7 @@ const PageSpeedInsights = () => {
 
   const getPageSpeedInsights = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     const inputURL = e.target.url.value;
     setLoadingMessage("Please wait...Running...");
 
@@ -1052,14 +1020,16 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
       setTotalByteWeight(totalByteWeightValue);
 
 
-    setTimeout(() => {
+      setTimeout(() => {
         // Once data is loaded, set isDataLoaded to true
         setIsDataLoaded(true);
         setLoadingMessage('Data loaded successfully');
+        setIsLoading(false); // Set isLoading to false when data is loaded
       }, 0);
     } catch (error) {
       console.error("Error fetching data:", error);
       setLoadingMessage("An error occurred while fetching data.");
+      setIsLoading(false); // Set isLoading to false on error
     }
   };
 
@@ -1304,7 +1274,13 @@ const sortNetworkRequests = (items) => {
         </div>
       </form>
       <p id="loading">{loadingMessage}</p>
-      {isDataLoaded && (
+      {isLoading ? (
+        <div id="loading">
+          {/* Use CircularProgress instead of the loading text */}
+          <LinearProgress />
+        </div>
+      ) : (
+        isDataLoaded && (
       <div className="container" id="results">
         
       { lighthouseMetrics['Performance'] !== undefined && (
@@ -1460,8 +1436,9 @@ const sortNetworkRequests = (items) => {
 
       
       </div>
-
-      )}
+        )
+      )
+     }
     </div>
     
   );
