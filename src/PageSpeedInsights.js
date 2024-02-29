@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-// import { Bar } from 'react-chartjs-2';
-// import { Doughnut } from 'react-chartjs-2';
 import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
 import { Divider, LinearProgress, CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
+import { MenuItem, Button, Grid, Card, CardContent, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UnminifiedCssResults from './UnminifiedCssResults'; 
 import UnminifiedJavascriptResults from './UnminifiedJavascriptResults'; 
@@ -1262,23 +1257,38 @@ const sortNetworkRequests = (items) => {
     <div className="container" id="main">
       <h1>Webpage Speed Test</h1>
       <form onSubmit={getPageSpeedInsights}>
-      <div style={{ marginBottom: '10px' }}>
-          <label style={{ marginRight: '10px' }}>Enter URL to Test Page Speed:</label>
-          <input id="url" name="url" type="text" required/>
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-          <label style={{ marginRight: '10px' }}>Select Device:</label>
-          <select value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)}>
-            <option value="desktop">Desktop</option>
-            <option value="mobile">Mobile</option>
-          </select>
-        </div>
-        <div>
-      <button type="submit" variant="contained" color="primary">
-        Submit
-      </button>
-    </div>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="url"
+              name="url"
+              type="text"
+              label="Enter URL to Test Page Speed"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              id="device"
+              name="device"
+              select
+              label="Select Device"
+              value={selectedDevice}
+              onChange={(e) => setSelectedDevice(e.target.value)}
+              fullWidth
+            >
+              <MenuItem value="desktop">Desktop</MenuItem>
+              <MenuItem value="mobile">Mobile</MenuItem>
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
       </form>
+
       <p id="loading">{loadingMessage}</p>
       {isLoading ? (
         <div id="loading">

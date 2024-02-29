@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 
 const Header = () => {
   return (
-    <AppBar position="static" style={{ backgroundColor: '#4a647b' }}>
+    <AppBar position="static" style={{ backgroundColor: '#333D79FF' }}>
       <Toolbar>
         <img src="https://cdn.shopify.com/s/files/1/0736/1180/4946/files/logo-1.png" alt="Logo" style={{ width: '40px', marginRight: '10px' }} />
         <Typography variant="h6">
