@@ -1119,7 +1119,7 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
           return (
             <Grid item xs={3} key={index}>
               <Card variant="outlined">
-                <CardContent>
+              <CardContent style={{ borderLeft: `0.25rem solid ${getColorBasedOnCategory(colorCategory)}` }} >
                   <h4 className="metric_card_title">
                     {key}
                   </h4>
@@ -1398,7 +1398,9 @@ const sortNetworkRequests = (items) => {
           <h2>Opportunities</h2>
          
           {/* Add tabs for each category */}
-              <Tabs value={selectedTab} onChange={handleTabChange}>
+              <Tabs value={selectedTab}
+              onChange={handleTabChange}
+              >
               <Tab label="All" value="All" />
               <Tab label="TBT" value="TBT" />
               <Tab label="FCP" value="FCP" />
