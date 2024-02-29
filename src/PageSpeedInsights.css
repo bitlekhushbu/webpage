@@ -2,6 +2,20 @@ body{
   background:#fafafb;
 }
 
+
+h1,h2,h3,h4,h5,h6{
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-style: normal;
+}
+
+p,span, label{
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
 .container {
     max-width: 1000px;
     margin: 0 auto;
@@ -44,23 +58,9 @@ body{
     margin-bottom: 10px;
   }
  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
-  }
+
  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
- 
-  th {
-    background-color: #f2f2f2;
-  }
- 
-  img {
+  .result-section img {
     width: 100%;
     height: auto;
     display: block;
@@ -105,4 +105,24 @@ body{
 
   .desktop-layout  .final-screenshot-load img{
     max-width: 400px;
+}
+
+
+/* Carbon footprint section */
+.result-section.carbon_footprint .main_content{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.result-section.carbon_footprint .main_content p{
+  color: #6b7280;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+.result-section.carbon_footprint .main_content h3{
+  font-size: 32px;
+  margin: 0px;
 }

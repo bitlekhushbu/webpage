@@ -1134,7 +1134,9 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
                     key === 'First Contentful Paint' ||
                     key === 'Largest Contentful Paint' ||
                     key === 'Speed Index' ||
-                    key === 'Cumulative Layout Shift' ? (
+                    key === 'Cumulative Layout Shift' ||
+                    key === 'Total Byte Weight' ||
+                    key === 'Network Requests'? (
                       <span>
                         {displayValue}
                       </span>
@@ -1341,10 +1343,18 @@ const sortNetworkRequests = (items) => {
 
         {/* Add the following code to display CO2e per new visit */}
         {totalByteWeight > 0 && (
-          <div className="result-section">
+          <div className="result-section carbon_footprint">
             <h2>Carbon Footprint</h2>
-            <p>Total Byte Weight: {bytesToKiB(newTotalByteWeightMB)} MB</p>
-            <p>CO2e per New Visit: {calculateCO2ePerNewVisit(totalByteWeight)} gm</p>
+            <div className="main_content">
+              <div className="main_item">
+                <p>Page Weight</p>
+                <h3>{bytesToKiB(newTotalByteWeightMB)} MB</h3>
+              </div>
+              <div className="main_item">
+                 <p>CO2e per New Visit</p>
+                 <h3>{calculateCO2ePerNewVisit(totalByteWeight)} gm</h3>
+              </div>
+            </div>
           </div>
         )}
      
