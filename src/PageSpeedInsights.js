@@ -1118,7 +1118,7 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
           return (
             <Grid item xs={3} key={index}>
-              <Card variant="outlined">
+            <Card variant="outlined" onClick={() => handleCardClick(key)}>
               <CardContent style={{ borderLeft: `0.25rem solid ${getColorBasedOnCategory(colorCategory)}` }} >
                   <h4 className="metric_card_title">
                     {key}
@@ -1259,6 +1259,26 @@ const sortNetworkRequests = (items) => {
     setSelectedTab(newValue);
   };
   
+  const handleCardClick = (key) => {
+    if (key === 'Total Blocking Time') {
+        setSelectedTab('TBT');
+        const tbtTab = document.getElementById('TBT-tab');
+        tbtTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (key === 'First Contentful Paint') {
+        setSelectedTab('FCP');
+        const tbtTab = document.getElementById('FCP-tab');
+        tbtTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (key === 'Largest Contentful Paint') {
+        setSelectedTab('LCP');
+        const tbtTab = document.getElementById('LCP-tab');
+        tbtTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (key === 'Cumulative Layout Shift') {
+        setSelectedTab('CLS');
+        const tbtTab = document.getElementById('CLS-tab');
+        tbtTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
+
   return (
     <div className="container" id="main">
       <h1>Webpage Speed Test</h1>
@@ -1348,8 +1368,8 @@ const sortNetworkRequests = (items) => {
       <Divider />
 
         {Object.keys(lighthouseMetrics).length > 0 && (
-          <div className="result-section">
-            <h2>Metric Overview</h2>
+          <div className="result-section matrics-overview-section">
+            <h2>Metrics Overview</h2>
             {renderTable(filterOutPerformanceMetric(lighthouseMetrics))} 
             <br/>
             <br/>
@@ -1398,15 +1418,13 @@ const sortNetworkRequests = (items) => {
           <h2>Opportunities</h2>
          
           {/* Add tabs for each category */}
-              <Tabs value={selectedTab}
-              onChange={handleTabChange}
-              >
-              <Tab label="All" value="All" />
-              <Tab label="TBT" value="TBT" />
-              <Tab label="FCP" value="FCP" />
-              <Tab label="CLS" value="CLS" />
-              <Tab label="LCP" value="LCP" />
-            </Tabs>
+          <Tabs value={selectedTab} onChange={handleTabChange}>
+              <Tab label="All" value="All" id="All-tab" />
+              <Tab label="TBT" value="TBT" id="TBT-tab" />
+              <Tab label="FCP" value="FCP" id="FCP-tab" />
+              <Tab label="CLS" value="CLS" id="CLS-tab" />
+              <Tab label="LCP" value="LCP" id="LCP-tab" />
+          </Tabs>
 
             {filteredResultSections.map((resultSection, index) => (
             resultSection.title !== 'Network Requests'  && (

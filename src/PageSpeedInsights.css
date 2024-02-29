@@ -140,3 +140,7 @@ h2 {
   font-size: 32px;
   margin: 0px;
 }
+
+.matrics-overview-section .MuiCardContent-root{
+  cursor: pointer;
+}
