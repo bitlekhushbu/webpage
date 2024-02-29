@@ -18,12 +18,17 @@ h2 {
   font-size: 32px;
 }
 
-th{
+.result-section th{
     font-weight: 600;
     line-height: 1.25;
 }
-
-
+#results th{
+  font-weight: 600;
+  line-height: 1.25;
+}
+.main_description{
+   margin-top: 0px;
+}
 .container {
     max-width: 1000px;
     margin: 0 auto;
@@ -101,6 +106,11 @@ th{
 
   #results .MuiPaper-root{
     box-shadow: none;
+  }
+
+  .result-section.final-screenshot-load{
+     display: flex;
+     align-items:center;
   }
 
   .final-screenshot-load img{

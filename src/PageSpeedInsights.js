@@ -3,7 +3,7 @@ import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
 import { Divider, LinearProgress, CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
-import { MenuItem, Button, Grid, Card, CardContent, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
+import { Tabs, Tab, MenuItem, Button, Grid, Card, CardContent, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UnminifiedCssResults from './UnminifiedCssResults'; 
 import UnminifiedJavascriptResults from './UnminifiedJavascriptResults'; 
@@ -90,7 +90,7 @@ const PageSpeedInsights = () => {
   const [usesRelPreconnectData, setUsesRelPreconnectData] = useState({});
   const [noDocumentWriteData, setNoDocumentWriteData] = useState({}); 
   const [networkRequestsData, setNetworkRequestsData] = useState({});
-  
+  const [selectedTab, setSelectedTab] = useState("All");
    
 
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
@@ -114,43 +114,43 @@ const PageSpeedInsights = () => {
   const newTotalByteWeightMB = totalByteWeightMB.toFixed(2); 
 
   const resultSections = [
-    { Component: UnminifiedCssResults, data: unminifiedCssData, title: "Unminified CSS" },
-    { Component: UnminifiedJavascriptResults, data: unminifiedJavascriptData, title: "Unminified JavaScript" },
-    { Component: UnsizedImagesResults, data: unsizedImagesData, title: "Image elements do not have explicit `width` and `height`" },
-    { Component: UnusedCssResults, data: unusedCssData, title: "Reduce Unused CSS" },
-    { Component: UnusedJavascriptResults, data: unusedJavascriptData, title: "Reduce Unused JavaScript" },
-    { Component: ThirdPartySummaryResults, data: thirdPartySummaryData, title: "Reduce the impact of third-party code" },
-    { Component: OffscreenImagesResults, data: offscreenImagesData, title: "Defer offscreen images" },
-    { Component: UsesResponsiveImagesResults, data: usesResponsiveImagesData, title: "Properly size images" },
-    { Component: RenderBlockingResourcesResults, data: renderBlockingResourcesData, title: "Eliminate render-blocking resources" },
-    { Component: MainThreadWorkBreakdownResults, data: mainThreadWorkBreakdownData, title: "Minimize main-thread work" },
-    { Component: DomSizeResults, data: domSizeData, title: "Avoid an excessive DOM size" },
-    { Component: ModernImageFormatsResults, data: modernImageFormatsData, title: "Serve images in next-gen formats" },
-    { Component: LongCacheTTLResults, data: longCacheTTLData, title: "Serve static assets with an efficient cache policy" },
-    { Component: FontDisplayResults, data: fontDisplayData, title: "Ensure text remains visible during webfont load" },
-    { Component: UsesPassiveEventListenersResults, data: usesPassiveEventListenersData, title: "Does not use passive listeners to improve scrolling performance" },
-    { Component: UsesOptimizedImagesResults, data: usesOptimizedImagesData, title: "Efficiently encode images" },
-    { Component: TotalByteWeightResults, data: totalByteWeightData, title: "Avoid enormous network payloads" },
-    { Component: LongTasksResults, data: longTasksData, title: "Avoid long main-thread tasks" },
-    { Component: LayoutShiftElementsResults, data: layoutShiftElementsData, title: "Avoid large layout shifts" },
-    { Component: UserTimingsData, data: userTimingsData, title: "User Timing marks and measures" },
-    { Component: ServerResponseTimeData, data: serverResponseTimeData, title: "Server Response Time" },
-    { data: criticalRequestChainsData, title: "Avoid chaining critical requests" },
-    { Component: AvoidRedirectsResults, data: avoidRedirectsData, title: "Avoid multiple page redirects" },
-    { Component: UsesRelPreloadResults, data: usesRelPreloadData, title: "Preload key requests" },
-    { Component: EfficientAnimatedContentResults, data: efficientAnimatedContentData, title: "Use video formats for animated content" },
-    { Component: DuplicatedJavascriptResults, data: duplicatedJavascriptData, title: "Remove duplicate modules in JavaScript bundles" },
-    { Component: ThirdPartyFacadesResults, data: thirdPartyFacadesData, title: "Lazy load third-party resources with facades" },
-    { Component: LargestContentPaintResults, data: largestContentPaintData, title: "Largest Contentful Paint image was lazily loaded" },
-    { Component: PreloadLCPImageResults, data: preloadLCPImageData, title: "Preload Largest Contentful Paint image" },
-    { Component: LegacyJavascriptResults, data: legacyJavascriptData, title: "Avoid serving legacy JavaScript to modern browsers" },
-    { Component: bootupTimeResults, data: bootupTimeData, title: "Reduce JavaScript execution time" } ,
-    { Component: NonCompositedAnimationsResults, data: nonCompositedAnimationsData, title: "Avoid non-composited animations" },
-    { Component: UsesTextCompressionResults, data: usesTextCompressionData, title: "Enable text compression" },
-    { Component: UsesRelPreconnectResults, data: usesRelPreconnectData, title: "Preconnect to required origins" },
+    { Component: UnminifiedCssResults, data: unminifiedCssData, title: "Unminified CSS", tags: ["FCP", "LCP"] },
+    { Component: UnminifiedJavascriptResults, data: unminifiedJavascriptData, title: "Unminified JavaScript", tags: ["FCP", "LCP"] },
+    { Component: UnsizedImagesResults, data: unsizedImagesData, title: "Image elements do not have explicit `width` and `height`", tags: ["CLS"]  },
+    { Component: UnusedCssResults, data: unusedCssData, title: "Reduce Unused CSS", tags: ["FCP", "LCP"] },
+    { Component: UnusedJavascriptResults, data: unusedJavascriptData, title: "Reduce Unused JavaScript", tags: ["LCP"]  },
+    { Component: ThirdPartySummaryResults, data: thirdPartySummaryData, title: "Reduce the impact of third-party code", tags: ["TBT"]  },
+    { Component: OffscreenImagesResults, data: offscreenImagesData, title: "Defer offscreen images", tags: []  },
+    { Component: UsesResponsiveImagesResults, data: usesResponsiveImagesData, title: "Properly size images", tags: []  },
+    { Component: RenderBlockingResourcesResults, data: renderBlockingResourcesData, title: "Eliminate render-blocking resources", tags: ["FCP", "LCP"]  },
+    { Component: MainThreadWorkBreakdownResults, data: mainThreadWorkBreakdownData, title: "Minimize main-thread work", tags: ["TBT"]  },
+    { Component: DomSizeResults, data: domSizeData, title: "Avoid an excessive DOM size", tags: ["TBT"]  },
+    { Component: ModernImageFormatsResults, data: modernImageFormatsData, title: "Serve images in next-gen formats", tags: []  },
+    { Component: LongCacheTTLResults, data: longCacheTTLData, title: "Serve static assets with an efficient cache policy", tags: []  },
+    { Component: FontDisplayResults, data: fontDisplayData, title: "Ensure text remains visible during webfont load", tags: ["FCP", "LCP"]  },
+    { Component: UsesPassiveEventListenersResults, data: usesPassiveEventListenersData, title: "Does not use passive listeners to improve scrolling performance", tags: []  },
+    { Component: UsesOptimizedImagesResults, data: usesOptimizedImagesData, title: "Efficiently encode images", tags: []  },
+    { Component: TotalByteWeightResults, data: totalByteWeightData, title: "Avoid enormous network payloads", tags: ["LCP"]  },
+    { Component: LongTasksResults, data: longTasksData, title: "Avoid long main-thread tasks", tags: ["TBT"]  },
+    { Component: LayoutShiftElementsResults, data: layoutShiftElementsData, title: "Avoid large layout shifts" , tags: ["CLS"] },
+    { Component: UserTimingsData, data: userTimingsData, title: "User Timing marks and measures", tags: []  },
+    { Component: ServerResponseTimeData, data: serverResponseTimeData, title: "Server Response Time", tags: ["FCP", "LCP"]  },
+    { data: criticalRequestChainsData, title: "Avoid chaining critical requests", tags: ["FCP", "LCP"] },
+    { Component: AvoidRedirectsResults, data: avoidRedirectsData, title: "Avoid multiple page redirects", tags: ["FCP", "LCP"] },
+    { Component: UsesRelPreloadResults, data: usesRelPreloadData, title: "Preload key requests", tags: ["FCP", "LCP"]  },
+    { Component: EfficientAnimatedContentResults, data: efficientAnimatedContentData, title: "Use video formats for animated content", tags: ["LCP"]  },
+    { Component: DuplicatedJavascriptResults, data: duplicatedJavascriptData, title: "Remove duplicate modules in JavaScript bundles", tags: ["TBT"]  },
+    { Component: ThirdPartyFacadesResults, data: thirdPartyFacadesData, title: "Lazy load third-party resources with facades", tags: ["TBT"]  },
+    { Component: LargestContentPaintResults, data: largestContentPaintData, title: "Largest Contentful Paint image was lazily loaded", tags: ["LCP"]  },
+    { Component: PreloadLCPImageResults, data: preloadLCPImageData, title: "Preload Largest Contentful Paint image", tags: ["LCP"]  },
+    { Component: LegacyJavascriptResults, data: legacyJavascriptData, title: "Avoid serving legacy JavaScript to modern browsers", tags: ["TBT"]  },
+    { Component: bootupTimeResults, data: bootupTimeData, title: "Reduce JavaScript execution time", tags: ["TBT"]  } ,
+    { Component: NonCompositedAnimationsResults, data: nonCompositedAnimationsData, title: "Avoid non-composited animations", tags: ["CLS"]  },
+    { Component: UsesTextCompressionResults, data: usesTextCompressionData, title: "Enable text compression", tags: ["FCP", "LCP"]  },
+    { Component: UsesRelPreconnectResults, data: usesRelPreconnectData, title: "Preconnect to required origins", tags: []  },
     // { data: viewportData, title: "Does not have a `\u003cmeta name=\"viewport\"\u003e` tag with `width` or `initial-scale`" }
-    { Component: NoDocumentWriteResults, data: noDocumentWriteData, title: "Avoids `document.write()`" },
-    { Component: NetworkRequestsResults, data: networkRequestsData, title: "Network Requests" },
+    { Component: NoDocumentWriteResults, data: noDocumentWriteData, title: "Avoids `document.write()`", tags: []  },
+    { Component: NetworkRequestsResults, data: networkRequestsData, title: "Network Requests", tags: ["TBT"]  },
     // Add more result sections as needed
   ];
   const sortedResultSections = resultSections.sort((a, b) => {
@@ -1251,7 +1251,13 @@ const sortNetworkRequests = (items) => {
     return (bytes / 1024).toFixed(2);
   };
 
-  
+  const filteredResultSections = selectedTab === "All"
+    ? resultSections
+    : resultSections.filter(section => section.tags.some(tag => tag === selectedTab));
+
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
   
   return (
     <div className="container" id="main">
@@ -1390,7 +1396,17 @@ const sortNetworkRequests = (items) => {
           {sortedResultSections && (
           <div>
           <h2>Opportunities</h2>
-          {sortedResultSections.map((resultSection, index) => (
+         
+          {/* Add tabs for each category */}
+              <Tabs value={selectedTab} onChange={handleTabChange}>
+              <Tab label="All" value="All" />
+              <Tab label="TBT" value="TBT" />
+              <Tab label="FCP" value="FCP" />
+              <Tab label="CLS" value="CLS" />
+              <Tab label="LCP" value="LCP" />
+            </Tabs>
+
+            {filteredResultSections.map((resultSection, index) => (
             resultSection.title !== 'Network Requests'  && (
             <Accordion key={index}>
               <AccordionSummary
@@ -1402,8 +1418,8 @@ const sortNetworkRequests = (items) => {
               </AccordionSummary>
               <AccordionDetails>
                 <div>
-                  <p>{resultSection.data.description}</p>
-                  <p>Score: {resultSection.data.score}</p>
+                  <p className='main_description'>{resultSection.data.description}</p>
+                  {/*<p>Score: {resultSection.data.score}</p>*/}
                   {/* Render common details for the result section */}
                   {renderResultDetails(resultSection)}
                   {/* ... render other details for the result section */}
