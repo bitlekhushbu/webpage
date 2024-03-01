@@ -1166,7 +1166,11 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
     // Customize tooltip content based on the metric key
     switch (key) {
       case 'Total Blocking Time':
-        return 'Tooltip for Total Blocking Time';
+        return (
+          <div>
+            <div>Tooltip for Total Blocking Time</div>
+          </div>
+        );
       case 'First Contentful Paint':
         return 'Tooltip for First Contentful Paint';
       case 'Largest Contentful Paint':
