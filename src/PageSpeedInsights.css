@@ -106,6 +106,12 @@ h2 {
 
   #results .MuiPaper-root{
     box-shadow: none;
+    height: 100%;
+  }
+
+  #results .MuiPaper-root .MuiCardContent-root{
+    box-shadow: none;
+    height: 100%;
   }
 
   .result-section.final-screenshot-load{

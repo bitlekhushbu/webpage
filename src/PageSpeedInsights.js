@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { CategoryScale } from 'chart.js';
 import './PageSpeedInsights.css';
 import Chart from 'chart.js/auto';
-import { Divider, LinearProgress, CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
-import { Tabs, Tab, MenuItem, Button, Grid, Card, CardContent, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
+import { Tooltip, Divider, LinearProgress, CircularProgress, Box, Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import {  Tabs, Tab, MenuItem, Button, Grid, Card, CardContent, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UnminifiedCssResults from './UnminifiedCssResults'; 
 import UnminifiedJavascriptResults from './UnminifiedJavascriptResults'; 
@@ -1069,6 +1071,7 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
     return (
       <Grid container spacing={3}>
         {Object.keys(metrics).map((key, index) => {
+          const tooltipContent = getTooltipContent(key);
           const colorCategory =
             key === 'Total Blocking Time'
               ? tbtCategory
@@ -1118,11 +1121,21 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
           return (
             <Grid item xs={3} key={index}>
+            
             <Card variant="outlined" onClick={() => handleCardClick(key)}>
               <CardContent style={{ borderLeft: `0.25rem solid ${getColorBasedOnCategory(colorCategory)}` }} >
-                  <h4 className="metric_card_title">
-                    {key}
-                  </h4>
+              
+                    <h4 className="metric_card_title">
+                      {key}
+                      {tooltipContent && (
+                      <Tooltip title={tooltipContent} arrow>
+                        <IconButton size="small" color="primary" style={{ marginLeft: 4 }}>
+                          <InfoIcon />
+                        </IconButton>
+                      </Tooltip>
+                      )}
+                    </h4>
+                  
                   <h3 className="metric_card_value">
                     {key === 'Total Blocking Time' ||
                     key === 'First Input Delay' ||
@@ -1149,7 +1162,22 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
   };
  
  
-
+  const getTooltipContent = (key) => {
+    // Customize tooltip content based on the metric key
+    switch (key) {
+      case 'Total Blocking Time':
+        return 'Tooltip for Total Blocking Time';
+      case 'First Contentful Paint':
+        return 'Tooltip for First Contentful Paint';
+      case 'Largest Contentful Paint':
+        return 'Tooltip for Largest Contentful Paint';
+      case 'Cumulative Layout Shift':
+        return 'Tooltip for Cumulative Layout Shift';
+      // ... add more cases as needed
+      default:
+        return '';
+    }
+  };
 
 // Function to categorize FCP, LCP, Speed Index, and CLS values
 const categorizeTBT = (tbtValue) => {
