@@ -41,8 +41,9 @@ import bootupTimeResults from './bootupTimeResults';
 import NonCompositedAnimationsResults from './NonCompositedAnimationsResults';
 import UsesTextCompressionResults from './UsesTextCompressionResults';
 import UsesRelPreconnectResults from './UsesRelPreconnectResults';
-import NoDocumentWriteResults from './NoDocumentWriteResults'
-
+import NoDocumentWriteResults from './NoDocumentWriteResults';
+import NetworkRequestsPieChart from './NetworkRequestsPieChart';
+import TotalByteWeightPieChart from './TotalByteWeightPieChart';
 
 Chart.register(CategoryScale);
 
@@ -95,7 +96,7 @@ const PageSpeedInsights = () => {
   const [selectedTab, setSelectedTab] = useState("All");
    
 
-  const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
+  const apiKey = "AIzaSyCgLTE5Sm-MgiDXriiKbAWGnWSUqyh-Xr4";
   
   const calculateCO2ePerNewVisit = (totalByteWeight) => {
 
@@ -1168,16 +1169,17 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
       case 'Total Blocking Time':
         return (
           <div>
-            <div>Tooltip for Total Blocking Time</div>
+            <div>Sum of all time periods between FCP and Time to Interactive, when task length exceeded 50ms.</div>
           </div>
         );
       case 'First Contentful Paint':
-        return 'Tooltip for First Contentful Paint';
+        return 'First Contentful Paint marks the time at which the first text or image is painted.';
       case 'Largest Contentful Paint':
-        return 'Tooltip for Largest Contentful Paint';
+        return 'Largest Contentful Paint marks the time at which the largest text or image is painted.';
       case 'Cumulative Layout Shift':
-        return 'Tooltip for Cumulative Layout Shift';
+        return 'Cumulative Layout Shift measures the movement of visible elements within the viewport.';
       // ... add more cases as needed
+
       default:
         return '';
     }
@@ -1323,6 +1325,7 @@ const sortNetworkRequests = (items) => {
               type="text"
               label="Enter URL to Test Page Speed"
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -1408,7 +1411,30 @@ const sortNetworkRequests = (items) => {
           </div>
         )}
       <Divider />
+  
+     <div className='result-section custom-pie-chart-section'>
 
+      {Object.keys(totalByteWeightData).length > 0 && (
+        <div className="custom-pie-chart-item">
+        <h2>Resource Size</h2>
+          <div className='totalByteWeight_pie-chart'>
+            <TotalByteWeightPieChart networkRequestsData={networkRequestsData} />
+          </div>
+        </div>
+      )}
+
+      
+
+      {Object.keys(networkRequestsData).length > 0 && (
+        <div className="custom-pie-chart-item">
+        <h2>Resource Count</h2>
+          <div className='networkRequest_pie-chart'>
+            <NetworkRequestsPieChart networkRequestsData={networkRequestsData} />
+          </div>
+        </div>
+      )}
+      </div>
+      <Divider />
         {/* Add the following code to display CO2e per new visit */}
         {totalByteWeight > 0 && (
           <div className="result-section carbon_footprint">
@@ -1430,7 +1456,7 @@ const sortNetworkRequests = (items) => {
 
         {Object.keys(thumbnailData).length > 0 && (
           <div className="result-section">
-            <h2>Filmstrip</h2>
+            <h2>Page Load Visualization</h2>
             <ul style={{display:'flex', listStyle:'none', width:'100%', gap:'15px', paddingLeft:'0px'}}>
               {thumbnailData.items.map((item, index) => (
                 <li key={index}>
@@ -1529,8 +1555,9 @@ const sortNetworkRequests = (items) => {
             <br/>
           </div>
         )}
-
         <Divider />
+       
+      
 
         {screenshot && (
           <div className="result-section">

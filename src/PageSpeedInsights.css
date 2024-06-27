@@ -29,6 +29,7 @@ h2 {
 .main_description{
    margin-top: 0px;
 }
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -149,4 +150,11 @@ h2 {
 
 .matrics-overview-section .MuiCardContent-root{
   cursor: pointer;
+}
+
+
+.result-section.custom-pie-chart-section{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap:30px;
 }
