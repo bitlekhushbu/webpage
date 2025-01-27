@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import supabase  from './supabaseClient'; // Ensure correct relative 
+import supabase from './supabaseClient'; // Ensure the correct Supabase client configuration
 import './PageSpeedInsights.css';
 import {
-  Tooltip,
   Divider,
   LinearProgress,
   Button,
@@ -12,7 +11,6 @@ import {
 } from '@mui/material';
 
 const PageSpeedInsights = () => {
-  console.log(supabase);
   const [selectedLayoutClass, setSelectedLayoutClass] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +23,8 @@ const PageSpeedInsights = () => {
 
   const calculateCO2ePerNewVisit = (totalByteWeight) => {
     const totalByteWeightMB = totalByteWeight / 1024 / 1024; // Convert bytes to MB
-    const pageWeightMB = 1.8; // Page weight in MB
-    const averageCO2ePerNewVisit = 0.6; // Average CO2e per new visit in grams
+    const pageWeightMB = 1.8; // Average page weight in MB
+    const averageCO2ePerNewVisit = 0.6; // Average CO2e per visit in grams
 
     const co2ePerNewVisit = (totalByteWeightMB / pageWeightMB) * averageCO2ePerNewVisit;
     return co2ePerNewVisit.toFixed(2);
@@ -51,25 +49,49 @@ const PageSpeedInsights = () => {
     try {
       const url = buildQueryURL(inputURL, apiKey);
       const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
       const json = await response.json();
       const lighthouseData = json.lighthouseResult;
 
       const totalByteWeightData = lighthouseData.audits['total-byte-weight'];
+      const totalByteWeightValue = totalByteWeightData.numericValue;
+
+      const co2ePerVisit = calculateCO2ePerNewVisit(totalByteWeightValue);
+
       setTotalByteWeightData({
         title: totalByteWeightData.title,
         description: totalByteWeightData.description,
         displayValue: totalByteWeightData.displayValue,
-        numericValue: totalByteWeightData.numericValue,
+        numericValue: totalByteWeightValue,
       });
 
-      setTotalByteWeight(totalByteWeightData.numericValue);
+      setTotalByteWeight(totalByteWeightValue);
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
-
       setIsDataLoaded(true);
-      setLoadingMessage('Data loaded successfully');
+
+      // Save data to Supabase
+      const { data, error } = await supabase.from('page_speed_data').insert([
+        {
+          url: inputURL,
+          page_weight: totalByteWeightValue / 1024 / 1024, // Convert bytes to MB
+          co2e_per_visit: parseFloat(co2ePerVisit),
+        },
+      ]);
+
+      if (error) {
+        console.error('Supabase Error:', error);
+        throw new Error('Error saving data to Supabase');
+      }
+
+      console.log('Data saved to Supabase:', data);
+      setLoadingMessage('Data loaded and saved successfully');
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoadingMessage('An error occurred while fetching data.');
+      console.error('Error fetching or saving data:', error);
+      setLoadingMessage(error.message || 'An error occurred while processing data.');
     } finally {
       setIsLoading(false);
     }
