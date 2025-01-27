@@ -45,6 +45,7 @@ const PageSpeedInsights = () => {
     setLoadingMessage('Please wait...Running...');
 
     const inputURL = e.target.url.value;
+    const email = e.target.email.value; // Get the email from the form
 
     try {
       const url = buildQueryURL(inputURL, apiKey);
@@ -79,6 +80,7 @@ const PageSpeedInsights = () => {
           url: inputURL,
           page_weight: totalByteWeightValue / 1024 / 1024, // Convert bytes to MB
           co2e_per_visit: parseFloat(co2ePerVisit),
+          email: email, // Include the email in the insert
         },
       ]);
 
@@ -108,6 +110,16 @@ const PageSpeedInsights = () => {
               name="url"
               type="text"
               label="Enter URL to Test Page Speed"
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="email"
+              name="email"
+              type="email"
+              label="Enter your Email"
               fullWidth
               required
             />
