@@ -8,7 +8,7 @@ import {
   Grid,
   TextField,
   MenuItem,
-} from '@mui/material';  
+} from '@mui/material';
 
 const PageSpeedInsights = () => {
   const [selectedLayoutClass, setSelectedLayoutClass] = useState('');
@@ -40,73 +40,89 @@ const PageSpeedInsights = () => {
     return query;
   };
 
-  // Generate a unique URL (can use timestamp and random string)
-  const generateUniqueUrl = () => {
-    const timestamp = new Date().getTime(); // Get the current timestamp
-    const randomString = Math.random().toString(36).substring(2, 15); // Generate a random string
-    return `https://test-two-tau-58.vercel.app/report/${timestamp}-${randomString}`; // Combine them to create a unique URL
+  const generateUniqueUrl = (id) => {
+    const timestamp = new Date().getTime();
+    const randomString = Math.random().toString(36).substring(2, 15);
+    return `/report/${id}-${timestamp}-${randomString}`;
   };
+  
+  
 
   const getPageSpeedInsights = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setLoadingMessage('Please wait...Running...');
-
+  
     const inputURL = e.target.url.value;
     const email = e.target.email.value; // Get the email from the form
-
+  
     try {
       const url = buildQueryURL(inputURL, apiKey);
       const response = await fetch(url);
-
+  
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
       }
-
+  
       const json = await response.json();
       const lighthouseData = json.lighthouseResult;
-
+  
       const totalByteWeightData = lighthouseData.audits['total-byte-weight'];
       const totalByteWeightValue = totalByteWeightData.numericValue;
-
+  
       const co2ePerVisit = calculateCO2ePerNewVisit(totalByteWeightValue);
-
+  
       setTotalByteWeightData({
         title: totalByteWeightData.title,
         description: totalByteWeightData.description,
         displayValue: totalByteWeightData.displayValue,
         numericValue: totalByteWeightValue,
       });
-
+  
       setTotalByteWeight(totalByteWeightValue);
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
       setIsDataLoaded(true);
-
-      // Generate a unique URL for the report
-      const uniqueUrl = generateUniqueUrl();
-      setGeneratedUrl(uniqueUrl); // Set the generated URL in the state
-
+  
       // Save data to Supabase
       const pageWeightFormatted = `${(totalByteWeightValue / 1024 / 1024).toFixed(2)} MB`;
       const co2ePerVisitFormatted = `${calculateCO2ePerNewVisit(totalByteWeightValue)} gm`;
-
-      // Save data to Supabase with formatted values
-      const { data, error } = await supabase.from('page_speed_data').insert([
-      {
-        url: inputURL,
-        page_weight: pageWeightFormatted, // Store formatted page weight
-        co2e_per_visit: co2ePerVisitFormatted, // Store formatted CO2e per visit
-        email: email, // Include the email in the insert
-        unique_url: uniqueUrl, // Store the unique URL in the database
-      },
-      ]);
-
+  
+      const { data, error } = await supabase
+      .from('page_speed_data')
+      .insert([
+        {
+          url: inputURL,
+          page_weight: pageWeightFormatted,
+          co2e_per_visit: co2ePerVisitFormatted,
+          email: email,
+        },
+      ])
+      .select(); // Ensure this returns the inserted row, including the `id`
+    
+  
       if (error) {
         console.error('Supabase Error:', error);
         throw new Error('Error saving data to Supabase');
       }
-
+  
       console.log('Data saved to Supabase:', data);
+  
+      // Generate the unique URL using the inserted ID
+      const uniqueUrl = generateUniqueUrl(data[0].id);
+      setGeneratedUrl(uniqueUrl); // Update the state with the new unique URL
+  
+      // Update the database with the unique URL
+      const { error: updateError } = await supabase
+  .from('page_speed_data')
+  .update({ unique_url: uniqueUrl })
+  .eq('id', data[0].id);
+
+  
+      if (updateError) {
+        console.error('Error updating unique URL:', updateError);
+        throw new Error('Error updating unique URL in the database');
+      }
+  
       setLoadingMessage('Data loaded and saved successfully');
     } catch (error) {
       console.error('Error fetching or saving data:', error);
@@ -115,6 +131,7 @@ const PageSpeedInsights = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="container" id="main">
@@ -187,7 +204,6 @@ const PageSpeedInsights = () => {
               </div>
             )}
             <Divider />
-            {/* Display the unique URL to the user */}
             <div>
               <h3>Your unique report URL:</h3>
               <a href={generatedUrl} target="_blank" rel="noopener noreferrer">

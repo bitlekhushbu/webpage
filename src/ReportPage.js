@@ -43,6 +43,7 @@ const ReportPage = () => {
  
 
 return (
+    <div class="container" id="main">
     <div className="result-section carbon_footprint url-data-carbon_footprint">
       <h2>Carbon Footprint</h2>
       <div className="main_item">
@@ -60,6 +61,7 @@ return (
           <h3>{reportData.co2e_per_visit}</h3>
         </div>
       </div>
+    </div>
     </div>
   );
     
