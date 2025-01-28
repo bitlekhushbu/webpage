@@ -1,85 +1,34 @@
 import React, { useState } from 'react';
-import { CategoryScale } from 'chart.js';
+import supabase from './supabaseClient'; // Ensure the correct Supabase client configuration
 import './PageSpeedInsights.css';
-import Chart from 'chart.js/auto';
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
 import {
-  Tooltip,
   Divider,
   LinearProgress,
-  Grid,
   Button,
+  Grid,
   TextField,
   MenuItem,
-  Card,
-  CardContent,
-} from '@mui/material';
-import NetworkRequestsPieChart from './NetworkRequestsPieChart';
-import TotalByteWeightPieChart from './TotalByteWeightPieChart';
-
-Chart.register(CategoryScale);
+} from '@mui/material';  
 
 const PageSpeedInsights = () => {
   const [selectedLayoutClass, setSelectedLayoutClass] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [lighthouseMetrics, setLighthouseMetrics] = useState({});
   const [totalByteWeight, setTotalByteWeight] = useState(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('mobile');
-  const [selectedTab, setSelectedTab] = useState('All');
-  const apiKey = 'AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL'; // Replace with your actual API key
+  const [totalByteWeightData, setTotalByteWeightData] = useState({});
+  const [generatedUrl, setGeneratedUrl] = useState(''); // State for generated URL
+
+  const apiKey = 'AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg';
 
   const calculateCO2ePerNewVisit = (totalByteWeight) => {
-    const totalByteWeightMB = totalByteWeight / 1024 / 1024; // Convert to MB
-    const pageWeight = 1.8; // Page weight in MB
-    const averageCO2ePerMB = 0.6; // CO2e per MB in grams
+    const totalByteWeightMB = totalByteWeight / 1024 / 1024; // Convert bytes to MB
+    const pageWeightMB = 1.8; // Average page weight in MB
+    const averageCO2ePerNewVisit = 0.6; // Average CO2e per visit in grams
 
-    const co2ePerNewVisit = (totalByteWeightMB / pageWeight) * averageCO2ePerMB;
+    const co2ePerNewVisit = (totalByteWeightMB / pageWeightMB) * averageCO2ePerNewVisit;
     return co2ePerNewVisit.toFixed(2);
-  };
-
-  const getPageSpeedInsights = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setLoadingMessage('Please wait... Running...');
-    const inputURL = e.target.url.value;
-
-    try {
-      const url = buildQueryURL(inputURL, apiKey);
-      const response = await fetch(url);
-      const json = await response.json();
-
-      const lighthouseData = json.lighthouseResult;
-      const totalByteWeightKiB = parseFloat(
-        lighthouseData.audits['total-byte-weight'].numericValue
-      );
-
-      setTotalByteWeight(totalByteWeightKiB);
-
-      const lighthouseMetricsData = {
-        Performance: lighthouseData.categories.performance.score * 100,
-        'Total Blocking Time': lighthouseData.audits['total-blocking-time'].numericValue / 1000,
-        'First Contentful Paint': lighthouseData.audits['first-contentful-paint'].displayValue,
-        'Largest Contentful Paint': lighthouseData.audits['largest-contentful-paint'].displayValue,
-        'Speed Index': lighthouseData.audits['speed-index'].displayValue,
-        'Cumulative Layout Shift': lighthouseData.audits['cumulative-layout-shift'].displayValue,
-        'First Input Delay': lighthouseData.audits['max-potential-fid'].numericValue / 1000,
-        'Total Byte Weight': `${(totalByteWeightKiB / 1024).toFixed(2)} MB`,
-        'Network Requests': lighthouseData.audits['network-requests'].details.items.length,
-      };
-
-      setLighthouseMetrics(lighthouseMetricsData);
-      setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
-      setIsDataLoaded(true);
-      setLoadingMessage('Data loaded successfully');
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoadingMessage('An error occurred while fetching data.');
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const buildQueryURL = (url, key) => {
@@ -91,45 +40,84 @@ const PageSpeedInsights = () => {
     return query;
   };
 
-  const renderTable = (metrics) => {
-    return (
-      <Grid container spacing={3}>
-        {Object.keys(metrics).map((key, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card variant="outlined">
-              <CardContent>
-                <h4>
-                  {key}
-                  <Tooltip title={getTooltipContent(key)} arrow>
-                    <IconButton size="small" color="primary">
-                      <InfoIcon />
-                    </IconButton>
-                  </Tooltip>
-                </h4>
-                <h3>{metrics[key]}</h3>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    );
+  // Generate a unique URL (can use timestamp and random string)
+  const generateUniqueUrl = () => {
+    const timestamp = new Date().getTime(); // Get the current timestamp
+    const randomString = Math.random().toString(36).substring(2, 15); // Generate a random string
+    return `https://test-two-tau-58.vercel.app/report/${timestamp}-${randomString}`; // Combine them to create a unique URL
   };
 
-  const getTooltipContent = (key) => {
-    switch (key) {
-      case 'Total Blocking Time':
-        return 'Sum of all time periods when task length exceeded 50ms.';
-      case 'First Contentful Paint':
-        return 'Marks the time when the first text or image is painted.';
-      case 'Largest Contentful Paint':
-        return 'Marks the time when the largest text or image is painted.';
-      default:
-        return '';
+  const getPageSpeedInsights = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setLoadingMessage('Please wait...Running...');
+
+    const inputURL = e.target.url.value;
+    const email = e.target.email.value; // Get the email from the form
+
+    try {
+      const url = buildQueryURL(inputURL, apiKey);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const json = await response.json();
+      const lighthouseData = json.lighthouseResult;
+
+      const totalByteWeightData = lighthouseData.audits['total-byte-weight'];
+      const totalByteWeightValue = totalByteWeightData.numericValue;
+
+      const co2ePerVisit = calculateCO2ePerNewVisit(totalByteWeightValue);
+
+      setTotalByteWeightData({
+        title: totalByteWeightData.title,
+        description: totalByteWeightData.description,
+        displayValue: totalByteWeightData.displayValue,
+        numericValue: totalByteWeightValue,
+      });
+
+      setTotalByteWeight(totalByteWeightValue);
+      setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
+      setIsDataLoaded(true);
+
+      // Generate a unique URL for the report
+      const uniqueUrl = generateUniqueUrl();
+      setGeneratedUrl(uniqueUrl); // Set the generated URL in the state
+
+      // Save data to Supabase
+      const pageWeightFormatted = `${(totalByteWeightValue / 1024 / 1024).toFixed(2)} MB`;
+      const co2ePerVisitFormatted = `${calculateCO2ePerNewVisit(totalByteWeightValue)} gm`;
+
+      // Save data to Supabase with formatted values
+      const { data, error } = await supabase.from('page_speed_data').insert([
+      {
+        url: inputURL,
+        page_weight: pageWeightFormatted, // Store formatted page weight
+        co2e_per_visit: co2ePerVisitFormatted, // Store formatted CO2e per visit
+        email: email, // Include the email in the insert
+        unique_url: uniqueUrl, // Store the unique URL in the database
+      },
+      ]);
+
+      if (error) {
+        console.error('Supabase Error:', error);
+        throw new Error('Error saving data to Supabase');
+      }
+
+      console.log('Data saved to Supabase:', data);
+      setLoadingMessage('Data loaded and saved successfully');
+    } catch (error) {
+      console.error('Error fetching or saving data:', error);
+      setLoadingMessage(error.message || 'An error occurred while processing data.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container">
+    <div className="container" id="main">
       <h1>Webpage Speed Test</h1>
       <form onSubmit={getPageSpeedInsights}>
         <Grid container spacing={2} alignItems="center">
@@ -137,7 +125,18 @@ const PageSpeedInsights = () => {
             <TextField
               id="url"
               name="url"
+              type="text"
               label="Enter URL to Test Page Speed"
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="email"
+              name="email"
+              type="email"
+              label="Enter your Email"
               fullWidth
               required
             />
@@ -163,19 +162,41 @@ const PageSpeedInsights = () => {
           </Grid>
         </Grid>
       </form>
+
+      <p id="loading">{loadingMessage}</p>
+
       {isLoading ? (
         <LinearProgress />
       ) : (
         isDataLoaded && (
-          <div className={selectedLayoutClass}>
-            <h2>Metrics Overview</h2>
-            {renderTable(lighthouseMetrics)}
-            <h2>Carbon Footprint</h2>
-            <p>CO2e per New Visit: {calculateCO2ePerNewVisit(totalByteWeight)} gm</p>
+          <div className={`container ${selectedLayoutClass}`} id="results">
+            <Divider />
+            {totalByteWeight > 0 && (
+              <div className="result-section carbon_footprint">
+                <h2>Carbon Footprint</h2>
+                <div className="main_content">
+                  <div className="main_item">
+                    <p>Page Weight</p>
+                    <h3>{(totalByteWeight / 1024 / 1024).toFixed(2)} MB</h3>
+                  </div>
+                  <div className="main_item">
+                    <p>CO2e per New Visit</p>
+                    <h3>{calculateCO2ePerNewVisit(totalByteWeight)} gm</h3>
+                  </div>
+                </div>
+              </div>
+            )}
+            <Divider />
+            {/* Display the unique URL to the user */}
+            <div>
+              <h3>Your unique report URL:</h3>
+              <a href={generatedUrl} target="_blank" rel="noopener noreferrer">
+                {generatedUrl}
+              </a>
+            </div>
           </div>
         )
       )}
-      <p>{loadingMessage}</p>
     </div>
   );
 };

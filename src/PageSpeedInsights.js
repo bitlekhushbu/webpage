@@ -18,6 +18,7 @@ const PageSpeedInsights = () => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('mobile');
   const [totalByteWeightData, setTotalByteWeightData] = useState({});
+  const [generatedUrl, setGeneratedUrl] = useState(''); // State for generated URL
 
   const apiKey = 'AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg';
 
@@ -39,57 +40,89 @@ const PageSpeedInsights = () => {
     return query;
   };
 
+  const generateUniqueUrl = (id) => {
+    const timestamp = new Date().getTime();
+    const randomString = Math.random().toString(36).substring(2, 15);
+    return `/report/${id}-${timestamp}-${randomString}`;
+  };
+  
+  
+
   const getPageSpeedInsights = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setLoadingMessage('Please wait...Running...');
-
+  
     const inputURL = e.target.url.value;
     const email = e.target.email.value; // Get the email from the form
-
+  
     try {
       const url = buildQueryURL(inputURL, apiKey);
       const response = await fetch(url);
-
+  
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
       }
-
+  
       const json = await response.json();
       const lighthouseData = json.lighthouseResult;
-
+  
       const totalByteWeightData = lighthouseData.audits['total-byte-weight'];
       const totalByteWeightValue = totalByteWeightData.numericValue;
-
+  
       const co2ePerVisit = calculateCO2ePerNewVisit(totalByteWeightValue);
-
+  
       setTotalByteWeightData({
         title: totalByteWeightData.title,
         description: totalByteWeightData.description,
         displayValue: totalByteWeightData.displayValue,
         numericValue: totalByteWeightValue,
       });
-
+  
       setTotalByteWeight(totalByteWeightValue);
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
       setIsDataLoaded(true);
-
+  
       // Save data to Supabase
-      const { data, error } = await supabase.from('page_speed_data').insert([
+      const pageWeightFormatted = `${(totalByteWeightValue / 1024 / 1024).toFixed(2)} MB`;
+      const co2ePerVisitFormatted = `${calculateCO2ePerNewVisit(totalByteWeightValue)} gm`;
+  
+      const { data, error } = await supabase
+      .from('page_speed_data')
+      .insert([
         {
           url: inputURL,
-          page_weight: totalByteWeightValue / 1024 / 1024, // Convert bytes to MB
-          co2e_per_visit: parseFloat(co2ePerVisit),
-          email: email, // Include the email in the insert
+          page_weight: pageWeightFormatted,
+          co2e_per_visit: co2ePerVisitFormatted,
+          email: email,
         },
-      ]);
-
+      ])
+      .select(); // Ensure this returns the inserted row, including the `id`
+    
+  
       if (error) {
         console.error('Supabase Error:', error);
         throw new Error('Error saving data to Supabase');
       }
-
+  
       console.log('Data saved to Supabase:', data);
+  
+      // Generate the unique URL using the inserted ID
+      const uniqueUrl = generateUniqueUrl(data[0].id);
+      setGeneratedUrl(uniqueUrl); // Update the state with the new unique URL
+  
+      // Update the database with the unique URL
+      const { error: updateError } = await supabase
+  .from('page_speed_data')
+  .update({ unique_url: uniqueUrl })
+  .eq('id', data[0].id);
+
+  
+      if (updateError) {
+        console.error('Error updating unique URL:', updateError);
+        throw new Error('Error updating unique URL in the database');
+      }
+  
       setLoadingMessage('Data loaded and saved successfully');
     } catch (error) {
       console.error('Error fetching or saving data:', error);
@@ -98,6 +131,7 @@ const PageSpeedInsights = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="container" id="main">
@@ -170,6 +204,12 @@ const PageSpeedInsights = () => {
               </div>
             )}
             <Divider />
+            <div>
+              <h3>Your unique report URL:</h3>
+              <a href={generatedUrl} target="_blank" rel="noopener noreferrer">
+                {generatedUrl}
+              </a>
+            </div>
           </div>
         )
       )}
