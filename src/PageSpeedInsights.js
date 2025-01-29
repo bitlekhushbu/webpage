@@ -11,6 +11,8 @@ import {
 } from '@mui/material';
 
 const PageSpeedInsights = () => {
+
+  console.log(supabase);
   const [selectedLayoutClass, setSelectedLayoutClass] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,9 +54,8 @@ const PageSpeedInsights = () => {
     e.preventDefault();
     setIsLoading(true);
     setLoadingMessage('Please wait...Running...');
-  
     const inputURL = e.target.url.value;
-    const email = e.target.email.value; // Get the email from the form
+    const email = e.target.email.value;
   
     try {
       const url = buildQueryURL(inputURL, apiKey);
@@ -83,54 +84,66 @@ const PageSpeedInsights = () => {
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
       setIsDataLoaded(true);
   
-      // Save data to Supabase
       const pageWeightFormatted = `${(totalByteWeightValue / 1024 / 1024).toFixed(2)} MB`;
-      const co2ePerVisitFormatted = `${calculateCO2ePerNewVisit(totalByteWeightValue)} gm`;
+      const co2ePerVisitFormatted = `${co2ePerVisit} gm`;
   
+      // Save data to Supabase
       const { data, error } = await supabase
-      .from('page_speed_data')
-      .insert([
-        {
-          url: inputURL,
-          page_weight: pageWeightFormatted,
-          co2e_per_visit: co2ePerVisitFormatted,
-          email: email,
-        },
-      ])
-      .select(); // Ensure this returns the inserted row, including the `id`
-    
+        .from('page_speed_data')
+        .insert([
+          {
+            url: inputURL,
+            page_weight: pageWeightFormatted,
+            co2e_per_visit: co2ePerVisitFormatted,
+            email: email,
+          },
+        ])
+        .select();
   
       if (error) {
         console.error('Supabase Error:', error);
         throw new Error('Error saving data to Supabase');
       }
   
-      console.log('Data saved to Supabase:', data);
-  
-      // Generate the unique URL using the inserted ID
       const uniqueUrl = generateUniqueUrl(data[0].id);
-      setGeneratedUrl(uniqueUrl); // Update the state with the new unique URL
+      setGeneratedUrl(uniqueUrl);
   
-      // Update the database with the unique URL
-      const { error: updateError } = await supabase
-  .from('page_speed_data')
-  .update({ unique_url: uniqueUrl })
-  .eq('id', data[0].id);
-
+      // Update the unique URL in Supabase
+      await supabase
+        .from('page_speed_data')
+        .update({ unique_url: uniqueUrl })
+        .eq('id', data[0].id);
   
-      if (updateError) {
-        console.error('Error updating unique URL:', updateError);
-        throw new Error('Error updating unique URL in the database');
+      // Send email
+      const emailResponse = await fetch('http://localhost:5000/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          data: {
+            url: inputURL,
+            pageWeight: pageWeightFormatted,
+            co2ePerVisit: co2ePerVisitFormatted,
+            reportUrl: uniqueUrl,
+          },
+        }),
+      });
+  
+      if (!emailResponse.ok) {
+        throw new Error('Failed to send email');
       }
   
-      setLoadingMessage('Data loaded and saved successfully');
+      setLoadingMessage('Data loaded and email sent successfully');
     } catch (error) {
-      console.error('Error fetching or saving data:', error);
+      console.error('Error:', error);
       setLoadingMessage(error.message || 'An error occurred while processing data.');
     } finally {
       setIsLoading(false);
     }
   };
+  
   
 
   return (

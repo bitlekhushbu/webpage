@@ -15,7 +15,11 @@
     "@testing-library/user-event": "^13.5.0",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.10",
+    "body-parser": "^1.20.3",
     "chart.js": "^4.4.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "nodemailer": "^6.10.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
@@ -47,5 +51,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
