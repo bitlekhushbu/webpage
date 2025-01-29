@@ -92,8 +92,17 @@ const PageSpeedInsights = () => {
       const emailResponse = await fetch('https://test-two-tau-58.vercel.app/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, data: { url: inputURL, pageWeight: pageWeightFormatted, co2ePerVisit: co2ePerVisitFormatted, reportUrl: uniqueUrl } }),
+        body: JSON.stringify({
+          email,
+          data: {
+            url: inputURL,
+            pageWeight: pageWeightFormatted,
+            co2ePerVisit: co2ePerVisitFormatted,
+            reportUrl: uniqueUrl,
+          },
+        }),
       });
+      
 
       if (!emailResponse.ok) throw new Error('Failed to send email');
 

@@ -1,10 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+require('dotenv').config(); // Load environment variables
 
 const app = express();
-app.use(cors({ origin: 'https://test-two-tau-58.vercel.app' })); // Allow requests from your deployed frontend
-app.use(express.json()); // Middleware to parse JSON
+app.use(cors({ origin: 'https://test-two-tau-58.vercel.app' })); // Allow frontend
+app.use(express.json()); // Middleware for JSON parsing
 
 app.get('/', (req, res) => {
   res.send('Server is running on Vercel!');
@@ -35,13 +36,13 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'khushbub.adexlabs@gmail.com',
-        pass: 'llhq hsdl ulfa yuxc', // Use environment variables in Vercel
+        user: process.env.EMAIL_USER, // Use env variables
+        pass: process.env.EMAIL_PASS, // Use env variables
       },
     });
 
     const mailOptions = {
-      from: 'khushbub.adexlabs@gmail.com',
+      from: process.env.EMAIL_USER,
       to: email,
       subject: 'Your Page Speed Report',
       text: emailText,
@@ -55,4 +56,4 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-module.exports = app; // Vercel requires this instead of app.listen()
+module.exports = app; // Vercel requires this
