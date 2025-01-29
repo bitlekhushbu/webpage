@@ -1,44 +1,53 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');
 const cors = require('cors');
-
-
+const nodemailer = require('nodemailer');
 
 const app = express();
-const PORT = 5000;
+app.use(cors({ origin: 'https://test-two-tau-58.vercel.app' })); // Allow requests from your deployed frontend
+app.use(express.json()); // Middleware to parse JSON
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-
-// Define the root route
 app.get('/', (req, res) => {
-  res.send('Welcome to the Email Sender API!');
+  res.send('Server is running on Vercel!');
 });
 
-// Endpoint to send email
 app.post('/send-email', async (req, res) => {
-  const { to, subject, text } = req.body;
+  const { email, data } = req.body;
+
+  if (!email || !data) {
+    return res.status(400).json({ error: 'Missing email or report data' });
+  }
+
+  const { url, pageWeight, co2ePerVisit, reportUrl } = data;
+
+  const emailText = `
+    Here is your Page Speed Report:
+
+    URL: ${url}
+    Page Weight: ${pageWeight}
+    CO2e per Visit: ${co2ePerVisit}
+    
+    View your full report here: https://your-frontend.vercel.app${reportUrl}
+
+    Thank you for using our service!
+  `;
 
   try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail', // Or your email service
+      service: 'gmail',
       auth: {
-        user: 'khushbub.adexlabs@gmail.com', // Replace with your email
-        pass: 'llhq hsdl ulfa yuxc', // Replace with your email password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS, // Use environment variables in Vercel
       },
     });
 
     const mailOptions = {
-      from: 'khushbub.adexlabs@gmail.com',
-      to,
-      subject,
-      text,
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Your Page Speed Report',
+      text: emailText,
     };
 
     await transporter.sendMail(mailOptions);
-
     res.status(200).json({ message: 'Email sent successfully!' });
   } catch (error) {
     console.error('Error sending email:', error);
@@ -46,7 +55,4 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+module.exports = app; // Vercel requires this instead of app.listen()
