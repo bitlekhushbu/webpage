@@ -26,7 +26,7 @@ app.post('/send-email', async (req, res) => {
     Page Weight: ${pageWeight}
     CO2e per Visit: ${co2ePerVisit}
     
-    View your full report here: https://your-frontend.vercel.app${reportUrl}
+    View your full report here: https://test-two-tau-58.vercel.app${reportUrl}
 
     Thank you for using our service!
   `;
@@ -35,13 +35,13 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Use environment variables in Vercel
+        user: 'khushbub.adexlabs@gmail.com',
+        pass: 'llhq hsdl ulfa yuxc', // Use environment variables in Vercel
       },
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: 'khushbub.adexlabs@gmail.com',
       to: email,
       subject: 'Your Page Speed Report',
       text: emailText,
