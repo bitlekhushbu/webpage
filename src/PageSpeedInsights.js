@@ -79,6 +79,25 @@ const PageSpeedInsights = () => {
       // Update Supabase with the unique URL
       await supabase.from('page_speed_data').update({ unique_url: uniqueUrl }).eq('id', data[0].id);
   
+      // Send email with the report details
+      const emailResponse = await fetch('https://test-two-tau-58.vercel.app/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          data: {
+            url: inputURL,
+            pageWeight: pageWeightFormatted,
+            co2ePerVisit: co2ePerVisitFormatted,
+            reportUrl: uniqueUrl,
+          },
+        }),
+      });
+  
+      if (!emailResponse.ok) throw new Error('Failed to send email');
+  
+      setLoadingMessage('Data loaded and email sent successfully');
+  
       // Redirect the user after the unique URL is successfully generated
       window.location.replace(uniqueUrl);
     } catch (error) {
