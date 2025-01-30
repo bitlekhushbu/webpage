@@ -36,18 +36,18 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'khushbub.adexlabs@gmail.com',
-        pass: 'gnki aihz gbri zclz',
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
       tls: {
         rejectUnauthorized: false,
       },
-      debug: true, // Enable debugging
+      debug: true,
     });
     
 
     const mailOptions = {
-      from: 'khushbub.adexlabs@gmail.com',
+      from: 'khushbubitle985@gmail.com',
       to: email,
       subject: 'Your Page Speed Report',
       text: emailText,
