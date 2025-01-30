@@ -45,68 +45,42 @@ const PageSpeedInsights = () => {
     e.preventDefault();
     setIsLoading(true);
     setLoadingMessage('Running speed test, please wait...');
-
+  
     const inputURL = e.target.url.value;
     const email = e.target.email.value;
-
+  
     try {
       const url = buildQueryURL(inputURL, apiKey);
       const response = await fetch(url);
-
+  
       if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
-
+  
       const json = await response.json();
       const lighthouseData = json.lighthouseResult;
-
+  
       const totalByteWeightData = lighthouseData.audits['total-byte-weight'];
       const totalByteWeightValue = totalByteWeightData.numericValue;
-
+  
       const co2ePerVisit = calculateCO2ePerNewVisit(totalByteWeightValue);
-
-      setTotalByteWeightData({
-        title: totalByteWeightData.title,
-        description: totalByteWeightData.description,
-        displayValue: totalByteWeightData.displayValue,
-        numericValue: totalByteWeightValue,
-      });
-
-      setTotalByteWeight(totalByteWeightValue);
-      setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
-      setIsDataLoaded(true);
-
+  
       const pageWeightFormatted = `${(totalByteWeightValue / 1024 / 1024).toFixed(2)} MB`;
       const co2ePerVisitFormatted = `${co2ePerVisit} gm`;
-
+  
+      // Save data to Supabase
       const { data, error } = await supabase
         .from('page_speed_data')
         .insert([{ url: inputURL, page_weight: pageWeightFormatted, co2e_per_visit: co2ePerVisitFormatted, email }])
         .select();
-
-      if (error) throw new Error('Error saving data to Supabase');
-
+  
+      if (error || !data || data.length === 0) throw new Error('Error saving data to Supabase');
+  
       const uniqueUrl = generateUniqueUrl(data[0].id);
-      setGeneratedUrl(uniqueUrl);
-
+  
+      // Update Supabase with the unique URL
       await supabase.from('page_speed_data').update({ unique_url: uniqueUrl }).eq('id', data[0].id);
-
-      const emailResponse = await fetch('https://test-two-tau-58.vercel.app/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          data: {
-            url: inputURL,
-            pageWeight: pageWeightFormatted,
-            co2ePerVisit: co2ePerVisitFormatted,
-            reportUrl: uniqueUrl,
-          },
-        }),
-      });
-      
-
-      if (!emailResponse.ok) throw new Error('Failed to send email');
-
-      setLoadingMessage('Data loaded and email sent successfully');
+  
+      // Redirect the user after the unique URL is successfully generated
+      window.location.replace(uniqueUrl);
     } catch (error) {
       console.error('Error:', error);
       setLoadingMessage(error.message || 'An error occurred while processing data.');
@@ -114,6 +88,8 @@ const PageSpeedInsights = () => {
       setIsLoading(false);
     }
   };
+  
+  
 
   return (
     <div className="container" id="main">
