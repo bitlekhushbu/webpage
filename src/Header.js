@@ -15,10 +15,11 @@ const Header = () => {
         alt="Logo"
         style={{ width: '40px', marginRight: '10px', cursor: 'pointer' }}
       />
-    </a>
+  
     <Typography variant="h6">
       Webpage Speed Test Tool
     </Typography>
+    </a>
   </Toolbar>
 </AppBar>
 
