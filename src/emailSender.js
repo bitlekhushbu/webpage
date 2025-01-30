@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 require('dotenv').config(); // Load environment variables
+app.use(cors()); // Allow all origins for testing
 
 const app = express();
 app.use(cors({ origin: 'https://test-two-tau-58.vercel.app' })); // Allow frontend

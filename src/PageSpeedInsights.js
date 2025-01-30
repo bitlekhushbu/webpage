@@ -25,7 +25,7 @@ const PageSpeedInsights = () => {
   const calculateCO2ePerNewVisit = (totalByteWeight) => {
     const totalByteWeightMB = totalByteWeight / 1024 / 1024;
     const pageWeightMB = 1.8;
-    const averageCO2ePerNewVisit = 0.6;
+    const averageCO2ePerNewVisit = 0.6;  
 
     return ((totalByteWeightMB / pageWeightMB) * averageCO2ePerNewVisit).toFixed(2);
   };
