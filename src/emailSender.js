@@ -2,10 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 require('dotenv').config(); // Load environment variables
-app.use(cors()); // Allow all origins for testing
 
 const app = express();
-app.use(cors({ origin: 'https://test-two-tau-58.vercel.app' })); // Allow frontend
+app.use(cors()); // Allow all origins for testing
 app.use(express.json()); // Middleware for JSON parsing
 
 app.get('/', (req, res) => {
@@ -37,18 +36,17 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_USER, // Email from environment variable
+        pass: process.env.EMAIL_PASS, // App password from environment variable
       },
       tls: {
         rejectUnauthorized: false,
       },
-      debug: true,
+      debug: true, // Enable debugging to see more detailed logs
     });
-    
 
     const mailOptions = {
-      from: 'khushbubitle985@gmail.com',
+      from: process.env.EMAIL_USER, // Sender email from environment variable
       to: email,
       subject: 'Your Page Speed Report',
       text: emailText,
