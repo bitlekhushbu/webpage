@@ -8,8 +8,9 @@ import Typography from '@mui/material/Typography';
 const Header = () => {
   return (
     <AppBar position="static" style={{ backgroundColor: '#333D79FF' }}>
+      <a href="https://test-two-tau-58.vercel.app/" style={{ textDecoration: 'none' }}>
   <Toolbar>
-    <a href="https://test-two-tau-58.vercel.app/" style={{ textDecoration: 'none' }}>
+    
       <img
         src="https://cdn.shopify.com/s/files/1/0736/1180/4946/files/logo-1.png"
         alt="Logo"
@@ -19,8 +20,9 @@ const Header = () => {
     <Typography variant="h6">
       Webpage Speed Test Tool
     </Typography>
-    </a>
+    
   </Toolbar>
+  </a>
 </AppBar>
 
   );
