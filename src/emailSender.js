@@ -42,7 +42,9 @@ app.post('/send-email', async (req, res) => {
       tls: {
         rejectUnauthorized: false,
       },
+      debug: true, // Enable debugging
     });
+    
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
