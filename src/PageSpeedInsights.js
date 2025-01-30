@@ -10,6 +10,9 @@ import {
   MenuItem,
 } from '@mui/material';
 
+// Import the sendEmail function from emailSender.js
+import sendEmail from './emailSender'; 
+
 const PageSpeedInsights = () => {
   const [selectedLayoutClass, setSelectedLayoutClass] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
@@ -82,22 +85,15 @@ const PageSpeedInsights = () => {
       // Update Supabase with the unique URL
       await supabase.from('page_speed_data').update({ unique_url: uniqueUrl }).eq('id', data[0].id);
   
-      // Send email with the report details
-      const emailResponse = await fetch('https://test-two-tau-58.vercel.app/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          data: {
-            url: inputURL,
-            pageWeight: pageWeightFormatted,
-            co2ePerVisit: co2ePerVisitFormatted,
-            reportUrl: uniqueUrl,
-          },
-        }),
+      // Send email with the report details using sendEmail function
+      const emailResponse = await sendEmail(email, {
+        url: inputURL,
+        pageWeight: pageWeightFormatted,
+        co2ePerVisit: co2ePerVisitFormatted,
+        reportUrl: uniqueUrl,
       });
   
-      if (!emailResponse.ok) throw new Error('Failed to send email');
+      if (!emailResponse.success) throw new Error('Failed to send email');
   
       setLoadingMessage('Data loaded and email sent successfully');
   
@@ -115,9 +111,6 @@ const PageSpeedInsights = () => {
       setIsLoading(false);
     }
   };
-  
-  
-  
 
   return (
     <div className="container" id="main">
@@ -139,7 +132,7 @@ const PageSpeedInsights = () => {
               fullWidth
               InputProps={{ readOnly: true }}
             />
-            </Grid>
+          </Grid>
 
           <Grid item xs={12} sm={3}>
             <Button type="submit" variant="contained" color="primary" fullWidth>Submit</Button>
