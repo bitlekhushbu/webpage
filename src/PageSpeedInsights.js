@@ -103,11 +103,16 @@ const PageSpeedInsights = () => {
             <TextField id="email" name="email" type="email" label="Enter your Email" fullWidth required />
           </Grid>
           <Grid item xs={12} sm={3}>
-            <TextField id="device" name="device" select label="Select Device" value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)} fullWidth>
-              <MenuItem value="desktop">Desktop</MenuItem>
-              <MenuItem value="mobile">Mobile</MenuItem>
-            </TextField>
-          </Grid>
+            <TextField
+              id="device"
+              name="device"
+              label="Device"
+              value="Desktop"
+              fullWidth
+              InputProps={{ readOnly: true }}
+            />
+            </Grid>
+
           <Grid item xs={12} sm={3}>
             <Button type="submit" variant="contained" color="primary" fullWidth>Submit</Button>
           </Grid>
