@@ -74,7 +74,10 @@ const PageSpeedInsights = () => {
   
       if (error || !data || data.length === 0) throw new Error('Error saving data to Supabase');
   
+      console.log("Inserted data:", data); // Debugging log
+  
       const uniqueUrl = generateUniqueUrl(data[0].id);
+      console.log("Generated Unique URL:", uniqueUrl); // Debugging log
   
       // Update Supabase with the unique URL
       await supabase.from('page_speed_data').update({ unique_url: uniqueUrl }).eq('id', data[0].id);
@@ -98,8 +101,13 @@ const PageSpeedInsights = () => {
   
       setLoadingMessage('Data loaded and email sent successfully');
   
-      // Redirect the user after the unique URL is successfully generated
-      window.location.replace(uniqueUrl);
+      // Ensure valid URL before redirecting
+      if (uniqueUrl && typeof uniqueUrl === 'string' && uniqueUrl.startsWith('/report/')) {
+        console.log("Redirecting to:", uniqueUrl);
+        window.location.href = uniqueUrl;
+      } else {
+        throw new Error("Invalid unique URL generated");
+      }
     } catch (error) {
       console.error('Error:', error);
       setLoadingMessage(error.message || 'An error occurred while processing data.');
@@ -107,6 +115,7 @@ const PageSpeedInsights = () => {
       setIsLoading(false);
     }
   };
+  
   
   
 
