@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_gH781jHp_NUHcRxYHf6C1fcuiwDRBBFGH');
 
 app.post("/send-email", async (req, res) => {
   const { email, data } = req.body;
