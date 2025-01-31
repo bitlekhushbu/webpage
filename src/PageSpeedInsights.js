@@ -83,7 +83,7 @@ const PageSpeedInsights = () => {
       await supabase.from('page_speed_data').update({ unique_url: uniqueUrl }).eq('id', data[0].id);
   
       // Send email with the report details
-      const emailResponse = await fetch('https://test-two-tau-58.vercel.app/send-email', {
+      const emailResponse = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
