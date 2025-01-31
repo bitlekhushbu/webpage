@@ -1,17 +1,31 @@
 import { Resend } from 'resend';
-import cors from 'cors';
+import Cors from 'cors';
 
 require('dotenv').config(); // Load .env file
-console.log("Resend API Key:", process.env.RESEND_API_KEY); // Debugging
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// The handler function for the Vercel serverless API route
-export default async function handler(req, res) {
-  // CORS setup
-  await cors(req, res);
+console.log(resend);        
 
-  // Only handle POST requests
+// Initialize CORS middleware
+const cors = Cors({
+  methods: ['GET', 'POST', 'HEAD'],
+});
+
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
+
+export default async function handler(req, res) {
+  await runMiddleware(req, res, cors);
+
+  // Ensure it's a POST request
   if (req.method === 'POST') {
     const { email, data } = req.body;
 
@@ -20,21 +34,22 @@ export default async function handler(req, res) {
     }
 
     try {
-      // Send the email using Resend
+      // Send email using Resend service
       await resend.emails.send({
-        from: "khushbub.adexlabs@gmail.com", // Replace with verified email
+        from: "khushbub.adexlabs@gmail.com", // Use verified sender email
         to: email,
         subject: "Your Page Speed Report",
         text: `Your report: https://test-two-tau-58.vercel.app/${data.reportUrl}`,
       });
 
+      // Send success response
       res.status(200).json({ message: "Email sent successfully!" });
     } catch (error) {
       console.error("Error sending email:", error);
       res.status(500).json({ error: `Failed to send email: ${error.message}` });
     }
   } else {
-    // If the method is not POST, return 405 (Method Not Allowed)
+    // Handle unsupported HTTP methods
     res.status(405).json({ error: "Method Not Allowed" });
   }
 }
