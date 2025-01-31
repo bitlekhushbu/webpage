@@ -85,7 +85,7 @@ const PageSpeedInsights = () => {
 
   
       // Send email with the report details
-      const emailResponse = await fetch('/api/send-email', {
+      const emailResponse = await fetch('https://test-two-tau-58.vercel.app/api/send-email', {
        
 
         method: 'POST',
