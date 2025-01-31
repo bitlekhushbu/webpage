@@ -9,6 +9,8 @@ app.use(express.json());
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_gH781jHp_NUHcRxYHf6C1fcuiwDRBBFGH');
 
+
+
 app.post("/send-email", async (req, res) => {
   const { email, data } = req.body;
 
@@ -20,7 +22,7 @@ app.post("/send-email", async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev", // You can change this to your verified domain email
+      from: "khushbub.adexlabs@gmail.com", // You can change this to your verified domain email
       to: email,
       subject: "Your Page Speed Report",
       text: `
