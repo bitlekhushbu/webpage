@@ -45,6 +45,7 @@ import UsesRelPreconnectResults from './UsesRelPreconnectResults';
 import NoDocumentWriteResults from './NoDocumentWriteResults';
 import NetworkRequestsPieChart from './NetworkRequestsPieChart';
 import TotalByteWeightPieChart from './TotalByteWeightPieChart';
+import supabase from './supabaseClient';
 
 Chart.register(CategoryScale);
 
@@ -217,15 +218,18 @@ const PageSpeedInsights = () => {
   const getPageSpeedInsights = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    const inputURL = e.target.url.value;
+   
+    
     setLoadingMessage("Please wait...Running...");
+
+    const inputURL = e.target.url.value;
+
 
     try {
       const url = buildQueryURL(inputURL, apiKey);
       const response = await fetch(url);
       const json = await response.json();
 
-  
 
       const lighthouseData = json.lighthouseResult;
 
@@ -1021,10 +1025,21 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
 
+      
+
+      
+      // Save data to Supabase
+      const { data, error } = await supabase
+        .from('pagespeed')
+        .insert([{ url: inputURL}])
+        .select();  
+
+        if (error || !data || data.length === 0) throw new Error('Error saving data to Supabase');
+
       setTimeout(() => {
         // Once data is loaded, set isDataLoaded to true
         setIsDataLoaded(true);
-        setLoadingMessage('Data loaded successfully');
+        setLoadingMessage('Data loaded successfully and stored in database');
         setIsLoading(false); // Set isLoading to false when data is loaded
       }, 0);
     } catch (error) {
