@@ -1026,6 +1026,8 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
 
+
+const performanceSentence = getPerformanceSentence(selectedDevice, lighthouseMetrics['Performance']); // Generate performance sentence
 const pageWeightFormatted = `${newTotalByteWeightMB} MB`; // Store with MB unit
 const co2ePerVisitFormatted = `${calculateCO2ePerNewVisit(totalByteWeightValue)} gm`; // Store with g unit
 
@@ -1037,6 +1039,7 @@ const { data, error } = await supabase
     page_weight: pageWeightFormatted, 
     co2e_per_visit: co2ePerVisitFormatted,
     device: selectedDevice,
+    performance_sentence: performanceSentence,
     email: email// Store selected device
   }])
   .select();
