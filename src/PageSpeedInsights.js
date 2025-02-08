@@ -223,6 +223,7 @@ const PageSpeedInsights = () => {
     setLoadingMessage("Please wait...Running...");
 
     const inputURL = e.target.url.value;
+    const email = e.target.email.value;
 
 
     try {
@@ -1025,14 +1026,21 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
 
-      
+const pageWeightFormatted = `${newTotalByteWeightMB} MB`; // Store with MB unit
+const co2ePerVisitFormatted = `${calculateCO2ePerNewVisit(totalByteWeightValue)} gm`; // Store with g unit
 
-      
-      // Save data to Supabase
-      const { data, error } = await supabase
-        .from('pagespeed')
-        .insert([{ url: inputURL}])
-        .select();  
+// Save data to Supabase
+const { data, error } = await supabase  
+  .from('pagespeed')
+  .insert([{ 
+    url: inputURL, 
+    page_weight: pageWeightFormatted, 
+    co2e_per_visit: co2ePerVisitFormatted,
+    device: selectedDevice,
+    email: email// Store selected device
+  }])
+  .select();
+ 
 
         if (error || !data || data.length === 0) throw new Error('Error saving data to Supabase');
 
@@ -1334,12 +1342,22 @@ const sortNetworkRequests = (items) => {
       <h1>Webpage Speed Test</h1>
       <form onSubmit={getPageSpeedInsights}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <TextField
               id="url"
               name="url"
               type="text"
               label="Enter URL to Test Page Speed"
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              id="email"
+              name="email"
+              type="email"
+              label="Enter Email"
               fullWidth
               required
             />
