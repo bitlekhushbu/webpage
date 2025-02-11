@@ -96,6 +96,7 @@ const PageSpeedInsights = () => {
   const [noDocumentWriteData, setNoDocumentWriteData] = useState({}); 
   const [networkRequestsData, setNetworkRequestsData] = useState({});
   const [selectedTab, setSelectedTab] = useState("All");
+  
    
 
   const apiKey = "AIzaSyCdLrXZ60ygA3MnE_XpyTietE6VL_VPwVg";
@@ -1026,8 +1027,13 @@ let newTotalByteWeightMBText = `${newTotalByteWeightMB} MB`;
 
       setSelectedLayoutClass(selectedDevice === 'desktop' ? 'desktop-layout' : 'mobile-layout');
 
+const performance = lighthouseData.categories.performance.score * 100..toFixed(0);
 
-const performanceSentence = getPerformanceSentence(selectedDevice, lighthouseMetrics['Performance']); // Generate performance sentence
+console.log("Total Performance:", Performance );
+
+      
+
+// Generate performance sentence
 const pageWeightFormatted = `${newTotalByteWeightMB} MB`; // Store with MB unit
 const co2ePerVisitFormatted = `${calculateCO2ePerNewVisit(totalByteWeightValue)} gm`; // Store with g unit
 
@@ -1039,7 +1045,7 @@ const { data, error } = await supabase
     page_weight: pageWeightFormatted, 
     co2e_per_visit: co2ePerVisitFormatted,
     device: selectedDevice,
-    performance_sentence: performanceSentence,
+    performance_sentence :performance,
     email: email// Store selected device
   }])
   .select();
@@ -1400,7 +1406,7 @@ const sortNetworkRequests = (items) => {
       { lighthouseMetrics['Performance'] !== undefined && (
         <div className="result-section">
           <h2>Overall score</h2>
-          <Box position="relative" display="inline-flex">
+          <Box position="relative" display="inline-flex">   
             <CircularProgress
               variant="determinate"
               value={lighthouseMetrics['Performance']}

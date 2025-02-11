@@ -13,9 +13,9 @@ const App = () => {
   <Route path="/" element={<PageSpeedInsights />} />
   <Route path="/report/:uniqueId" element={<ReportPage />} />
 </Routes>
-    </Router>
+    </Router>  
   );
 };
 
-export default App;
+export default App;   
 
